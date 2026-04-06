@@ -2,8 +2,15 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Arena — Feature Docs</title>
+<link rel="manifest" href="app.webmanifest">
+<meta name="theme-color" content="#3d3bff">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Arena Docs">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -285,9 +292,39 @@ body {
 
 @media (max-width: 768px) {
   .sidebar { display: none; }
-  .main { padding: 20px 18px 60px; max-width: 100%; }
+  .main { padding: 16px 14px 80px; max-width: 100%; }
   .q-grid { grid-template-columns: repeat(2, 1fr); }
-  .home-hero-stats { flex-wrap: wrap; gap: 10px; }
+  .home-hero { padding: 20px 18px; }
+  .home-hero-title { font-size: 20px; }
+  .home-hero-stats { flex-wrap: wrap; gap: 8px; }
+  .hero-stat { padding: 8px 12px; }
+  .hero-stat-n { font-size: 18px; }
+  .q-view-hdr { padding: 16px 18px; }
+  .q-view-badge { font-size: 28px; }
+  .q-view-hdr::after { font-size: 56px; }
+  .task-path { max-width: 200px; }
+  .hdr { padding: 0 16px; }
+  .hdr-badge { display: none; }
+
+  /* Bottom nav cho mobile */
+  .mob-nav {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    background: var(--surface);
+    border-top: 1px solid var(--line);
+    display: flex; align-items: center; justify-content: space-around;
+    padding: 10px 0 max(10px, env(safe-area-inset-bottom));
+    z-index: 200;
+  }
+  .mob-nav-btn {
+    display: flex; flex-direction: column; align-items: center; gap: 3px;
+    font-size: 10px; color: var(--muted); cursor: pointer; padding: 4px 16px;
+    border: none; background: none; font-family: inherit;
+  }
+  .mob-nav-btn.active { color: var(--accent); }
+  .mob-nav-icon { font-size: 18px; }
+}
+@media (min-width: 769px) {
+  .mob-nav { display: none; }
 }
 </style>
 </head>
@@ -300,6 +337,15 @@ body {
   </div>
   <span class="hdr-badge">Spec Portal</span>
 </header>
+
+<div class="mob-nav" id="mob-nav">
+  <button class="mob-nav-btn active" id="mob-home" onclick="goHome()">
+    <span class="mob-nav-icon">🏠</span> Home
+  </button>
+  <button class="mob-nav-btn" id="mob-search" onclick="focusSearch()">
+    <span class="mob-nav-icon">🔍</span> Tìm
+  </button>
+</div>
 
 <div class="layout">
   <nav class="sidebar" id="sidebar"></nav>
@@ -511,8 +557,18 @@ function taskList(ts, showQ=false, qColor='#3d3bff') {
   }).join('')}</div>`;
 }
 
-function goHome()      { state={year:null,q:null,search:''}; render(); }
+function goHome() {
+  state={year:null,q:null,search:''}; render();
+  const h=document.getElementById('mob-home'), s=document.getElementById('mob-search');
+  if(h) h.classList.add('active'); if(s) s.classList.remove('active');
+}
 function selectQ(yr,q) { state={year:yr,q,search:''}; render(); }
+function focusSearch() {
+  goHome();
+  setTimeout(()=>{ const i=document.querySelector('.search-wrap input'); if(i){ i.focus(); window.scrollTo({top:0,behavior:'smooth'}); } }, 50);
+  const h=document.getElementById('mob-home'), s=document.getElementById('mob-search');
+  if(h) h.classList.remove('active'); if(s) s.classList.add('active');
+}
 function toggleYr(yr) {
   collapsed[yr] = !collapsed[yr];
   const el = document.getElementById('sbqs-'+yr);
@@ -531,6 +587,11 @@ fetch('manifest.json')
         <span style="color:#6b6b7e">Kiểm tra file có cùng thư mục với index.html.</span>
       </div>`;
   });
+</script>
+<script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('./sw.js');
+}
 </script>
 </body>
 </html>

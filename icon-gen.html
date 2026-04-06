@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Icon Generator</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, sans-serif; background: #111; min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 40px 20px; gap: 32px; }
+h1 { color: #fff; font-size: 18px; font-weight: 600; }
+.grid { display: flex; flex-wrap: wrap; gap: 28px; justify-content: center; }
+.card { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+.preview { width: 110px; height: 110px; border-radius: 24px; overflow: hidden; box-shadow: 0 8px 32px rgba(0,0,0,.5); }
+.preview svg { width: 100%; height: 100%; display: block; }
+.label { color: #777; font-size: 11px; }
+.btns { display: flex; gap: 6px; }
+button { padding: 6px 14px; border-radius: 7px; border: 1px solid #2a2a2a; background: #1a1a1a; color: #ccc; font-size: 11px; cursor: pointer; }
+button:hover { background: #252525; color: #fff; }
+</style>
+</head>
+<body>
+<h1>Chọn icon → tải 192 & 512</h1>
+<div class="grid" id="grid"></div>
+<script>
+const icons = [
+  {
+    name: 'Billiard 8-Ball',
+    svg: `<svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+      <rect width="512" height="512" fill="#1a1a2e"/>
+      <circle cx="256" cy="256" r="180" fill="#111"/>
+      <circle cx="256" cy="256" r="180" fill="url(#ball-grad)" opacity="0.9"/>
+      <defs>
+        <radialGradient id="ball-grad" cx="38%" cy="32%" r="65%">
+          <stop offset="0%" stop-color="#444"/>
+          <stop offset="100%" stop-color="#000"/>
+        </radialGradient>
+        <radialGradient id="circle-grad" cx="40%" cy="35%" r="60%">
+          <stop offset="0%" stop-color="#fff"/>
+          <stop offset="100%" stop-color="#e0e0e0"/>
+        </radialGradient>
+      </defs>
+      <circle cx="256" cy="256" r="72" fill="url(#circle-grad)"/>
+      <text x="256" y="275" font-family="-apple-system,sans-serif" font-size="72" font-weight="900" fill="#111" text-anchor="middle">8</text>
+      <circle cx="190" cy="168" r="28" fill="rgba(255,255,255,0.12)"/>
+    </svg>`
+  },
+  {
+    name: 'Doc Stack',
+    svg: `<svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="dg" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#5b50f0"/>
+          <stop offset="100%" stop-color="#7c3aed"/>
+        </linearGradient>
+      </defs>
+      <rect width="512" height="512" fill="url(#dg)"/>
+      <!-- doc 3 shadow back-right -->
+      <rect x="176" y="156" width="216" height="268" rx="20" fill="rgba(255,255,255,0.12)"/>
+      <!-- doc 2 middle -->
+      <rect x="160" y="140" width="216" height="268" rx="20" fill="rgba(255,255,255,0.22)"/>
+      <!-- doc 1 front -->
+      <rect x="120" y="108" width="230" height="285" rx="20" fill="white"/>
+      <!-- header bar -->
+      <rect x="120" y="108" width="230" height="52" rx="20" fill="#ede9fe"/>
+      <rect x="120" y="136" width="230" height="24" fill="#ede9fe"/>
+      <!-- lines -->
+      <rect x="152" y="188" width="100" height="13" rx="6" fill="#6d28d9"/>
+      <rect x="152" y="216" width="166" height="11" rx="5" fill="#ddd6fe"/>
+      <rect x="152" y="238" width="148" height="11" rx="5" fill="#ddd6fe"/>
+      <rect x="152" y="260" width="130" height="11" rx="5" fill="#ddd6fe"/>
+      <rect x="152" y="290" width="80" height="11" rx="5" fill="#ede9fe"/>
+      <rect x="152" y="312" width="110" height="11" rx="5" fill="#ede9fe"/>
+    </svg>`
+  },
+  {
+    name: 'Checklist',
+    svg: `<svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="cg" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#059669"/>
+          <stop offset="100%" stop-color="#0d9488"/>
+        </linearGradient>
+      </defs>
+      <rect width="512" height="512" fill="url(#cg)"/>
+      <rect x="100" y="128" width="312" height="256" rx="24" fill="rgba(255,255,255,0.95)"/>
+      <!-- row 1 checked -->
+      <rect x="128" y="175" width="36" height="36" rx="10" fill="#059669"/>
+      <text x="146" y="201" font-family="-apple-system,sans-serif" font-size="26" font-weight="800" fill="white" text-anchor="middle">✓</text>
+      <rect x="182" y="185" width="110" height="12" rx="6" fill="#d1fae5"/>
+      <!-- row 2 checked -->
+      <rect x="128" y="227" width="36" height="36" rx="10" fill="#059669"/>
+      <text x="146" y="253" font-family="-apple-system,sans-serif" font-size="26" font-weight="800" fill="white" text-anchor="middle">✓</text>
+      <rect x="182" y="237" width="140" height="12" rx="6" fill="#d1fae5"/>
+      <!-- row 3 unchecked -->
+      <rect x="128" y="279" width="36" height="36" rx="10" fill="none" stroke="#d1fae5" stroke-width="3"/>
+      <rect x="182" y="289" width="90" height="12" rx="6" fill="#e5e7eb"/>
+      <!-- row 4 unchecked -->
+      <rect x="128" y="331" width="36" height="36" rx="10" fill="none" stroke="#d1fae5" stroke-width="3"/>
+      <rect x="182" y="341" width="120" height="12" rx="6" fill="#e5e7eb"/>
+    </svg>`
+  },
+  {
+    name: 'Diamond',
+    svg: `<svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="bg-d" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#0f172a"/>
+          <stop offset="100%" stop-color="#1e1b4b"/>
+        </linearGradient>
+        <linearGradient id="d1" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#a5f3fc"/>
+          <stop offset="100%" stop-color="#818cf8"/>
+        </linearGradient>
+      </defs>
+      <rect width="512" height="512" fill="url(#bg-d)"/>
+      <!-- diamond -->
+      <polygon points="256,96 400,256 256,416 112,256" fill="url(#d1)" opacity="0.9"/>
+      <polygon points="256,96 400,256 256,240" fill="rgba(255,255,255,0.3)"/>
+      <polygon points="256,96 112,256 256,240" fill="rgba(255,255,255,0.15)"/>
+      <polygon points="256,416 400,256 256,272" fill="rgba(0,0,0,0.25)"/>
+      <polygon points="256,416 112,256 256,272" fill="rgba(0,0,0,0.15)"/>
+    </svg>`
+  },
+  {
+    name: 'Lightning',
+    svg: `<svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="lg" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#f59e0b"/>
+          <stop offset="100%" stop-color="#ef4444"/>
+        </linearGradient>
+      </defs>
+      <rect width="512" height="512" fill="#0c0a09"/>
+      <polygon points="290,80 160,290 250,290 222,432 352,222 262,222" fill="url(#lg)"/>
+      <polygon points="290,80 160,290 250,290 220,380" fill="rgba(255,255,255,0.15)"/>
+    </svg>`
+  },
+  {
+    name: 'Layers',
+    svg: `<svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="lay-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#1e293b"/>
+          <stop offset="100%" stop-color="#0f172a"/>
+        </linearGradient>
+      </defs>
+      <rect width="512" height="512" fill="url(#lay-bg)"/>
+      <!-- layer 3 -->
+      <rect x="96" y="296" width="320" height="64" rx="16" fill="rgba(99,102,241,0.4)"/>
+      <!-- layer 2 -->
+      <rect x="96" y="224" width="320" height="64" rx="16" fill="rgba(99,102,241,0.65)"/>
+      <!-- layer 1 top -->
+      <rect x="96" y="152" width="320" height="64" rx="16" fill="#6366f1"/>
+      <!-- dots left -->
+      <circle cx="136" cy="184" r="10" fill="rgba(255,255,255,0.6)"/>
+      <circle cx="136" cy="256" r="10" fill="rgba(255,255,255,0.35)"/>
+      <circle cx="136" cy="328" r="10" fill="rgba(255,255,255,0.2)"/>
+      <!-- lines -->
+      <rect x="164" y="178" width="160" height="12" rx="6" fill="rgba(255,255,255,0.9)"/>
+      <rect x="164" y="250" width="120" height="12" rx="6" fill="rgba(255,255,255,0.5)"/>
+      <rect x="164" y="322" width="80" height="12" rx="6" fill="rgba(255,255,255,0.3)"/>
+    </svg>`
+  }
+];
+
+function svgToPng(svgStr, size, cb) {
+  const blob = new Blob([svgStr], {type:'image/svg+xml'});
+  const url = URL.createObjectURL(blob);
+  const img = new Image();
+  img.onload = () => {
+    const c = document.createElement('canvas');
+    c.width = c.height = size;
+    c.getContext('2d').drawImage(img, 0, 0, size, size);
+    URL.revokeObjectURL(url);
+    cb(c.toDataURL('image/png'));
+  };
+  img.src = url;
+}
+
+icons.forEach(ic => {
+  const card = document.createElement('div'); card.className='card';
+  const preview = document.createElement('div'); preview.className='preview';
+  preview.innerHTML = ic.svg;
+  const label = document.createElement('div'); label.className='label'; label.textContent=ic.name;
+  const btns = document.createElement('div'); btns.className='btns';
+  [192,512].forEach(sz => {
+    const btn = document.createElement('button');
+    btn.textContent = sz+'px';
+    btn.onclick = () => svgToPng(ic.svg, sz, d => { const a=document.createElement('a'); a.download=`icon-${sz}.png`; a.href=d; a.click(); });
+    btns.appendChild(btn);
+  });
+  card.append(preview, label, btns);
+  document.getElementById('grid').appendChild(card);
+});
+</script>
+</body>
+</html>
