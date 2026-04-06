@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Đưa App Lên CH Play — Bảng Điểm Arena</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f4f2ee;--surface:#fff;--surface2:#faf9f6;--border:#e2dfda;--border2:#d0cdc6;
+  --text:#18150f;--text2:#3b362d;--muted:#8a8278;
+  --green:#1a7a4a;--green-bg:#e6f5ed;--green-b:rgba(26,122,74,.2);
+  --blue:#2260a8;--blue-bg:#e7f0fa;--blue-b:rgba(34,96,168,.2);
+  --orange:#a85b0d;--orange-bg:#fef4e5;--orange-b:rgba(168,91,13,.15);
+  --red:#b53535;--red-bg:#fce8e8;--red-b:rgba(181,53,53,.18);
+  --purple:#6846a8;--purple-bg:#f0eaf8;--purple-b:rgba(104,70,168,.15);
+  --cyan:#0c7085;--cyan-bg:#e4f5f9;
+  --r:10px;--sh:0 1px 4px rgba(24,21,15,.06);--sh2:0 4px 20px rgba(24,21,15,.08);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;line-height:1.6}
+
+.hdr{background:var(--surface);border-bottom:1px solid var(--border);padding:16px 32px;position:sticky;top:0;z-index:200;box-shadow:var(--sh)}
+.hdr-in{max-width:1320px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.logo{display:flex;align-items:center;gap:10px}
+.logo-i{width:34px;height:34px;background:linear-gradient(135deg,#1a7a4a,#22c55e);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;color:#fff;box-shadow:0 2px 8px rgba(26,122,74,.3)}
+.logo h1{font-size:16px;font-weight:800;letter-spacing:-.3px}
+.logo small{font-size:10px;color:var(--muted);font-weight:500}
+.tags{display:flex;gap:7px;flex-wrap:wrap}
+.tg{font-family:'IBM Plex Mono',monospace;font-size:9px;padding:3px 9px;border-radius:5px;background:var(--surface2);border:1px solid var(--border);color:var(--muted);font-weight:600;letter-spacing:.5px;text-transform:uppercase}
+.tg.v{color:var(--green);border-color:var(--green-b);background:var(--green-bg)}
+
+.tabs{background:var(--surface);border-bottom:1px solid var(--border);padding:0 32px;overflow-x:auto}
+.tabs-in{max-width:1320px;margin:0 auto;display:flex;gap:0}
+.tb{font-family:'DM Sans',sans-serif;font-size:12.5px;font-weight:600;padding:12px 20px;border:none;background:none;color:var(--muted);cursor:pointer;border-bottom:2.5px solid transparent;transition:.2s;white-space:nowrap;display:flex;align-items:center;gap:6px}
+.tb:hover{color:var(--text2)}
+.tb.on{color:var(--green);border-bottom-color:var(--green)}
+.tb .num{font-family:'IBM Plex Mono',monospace;font-size:9px;font-weight:700;background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:1px 5px}
+.tb.on .num{background:var(--green-bg);border-color:var(--green-b);color:var(--green)}
+
+.main{max-width:1320px;margin:0 auto;padding:28px 32px 80px}
+.pan{display:none}.pan.on{display:block}
+.sec{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin:28px 0 14px;display:flex;align-items:center;gap:10px}
+.sec::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* USER STORY */
+.us-hero{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:26px 30px;box-shadow:var(--sh);margin-bottom:20px;position:relative;overflow:hidden}
+.us-hero::before{content:'';position:absolute;top:0;left:0;width:5px;height:100%;background:var(--green)}
+.us-label{font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:700;color:var(--green);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px}
+.us-title{font-size:17px;font-weight:800;color:var(--text);margin-bottom:6px;line-height:1.4}
+.us-as{font-size:13.5px;color:var(--text2);line-height:1.8}
+.us-as em{font-style:italic;color:var(--green);font-weight:600}
+.info-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:8px;margin-top:14px}
+.info-item{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px 14px}
+.info-item .il{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:3px}
+.info-item .iv{font-size:12.5px;font-weight:600;color:var(--text)}
+.act-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+.act{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:13px 16px;display:flex;align-items:center;gap:11px;box-shadow:var(--sh)}
+.act-i{width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.act-i.u{background:var(--blue-bg)}.act-i.s{background:var(--green-bg)}.act-i.h{background:var(--orange-bg)}
+.act h3{font-size:12px;font-weight:700}.act p{font-size:10.5px;color:var(--muted);margin-top:1px}
+.ac-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:10px}
+.ac-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px 20px;box-shadow:var(--sh)}
+.ac-card h4{font-size:12px;font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.ac-num{font-family:'IBM Plex Mono',monospace;font-size:9px;font-weight:700;width:20px;height:20px;border-radius:5px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:var(--blue-bg);color:var(--blue)}
+.ac-line{font-size:12px;color:var(--text2);line-height:1.6;padding:3px 0;border-bottom:1px solid var(--border);display:flex;gap:7px}
+.ac-line:last-child{border:none}
+.ac-kw{font-family:'IBM Plex Mono',monospace;font-size:9px;font-weight:700;padding:2px 6px;border-radius:4px;flex-shrink:0;margin-top:1px}
+.kw-g{background:var(--blue-bg);color:var(--blue)}.kw-w{background:var(--orange-bg);color:var(--orange)}.kw-t{background:var(--green-bg);color:var(--green)}
+
+/* FLOW */
+.flow{display:flex;flex-direction:column;gap:0;max-width:720px;margin:0 auto}
+.conn{display:flex;align-items:center;justify-content:center;position:relative;min-height:28px;padding:2px 0}
+.conn::before{content:'';width:2px;height:100%;background:var(--border2);position:absolute;left:50%;transform:translateX(-50%)}
+.conn-lbl{position:relative;z-index:1;font-family:'IBM Plex Mono',monospace;font-size:9.5px;font-weight:600;padding:3px 11px;border-radius:20px;border:1px solid;white-space:nowrap}
+.conn-lbl.ok{color:var(--green);background:var(--green-bg);border-color:var(--green-b)}
+.conn-lbl.no{color:var(--red);background:var(--red-bg);border-color:var(--red-b)}
+.conn-lbl.info{color:var(--blue);background:var(--blue-bg);border-color:var(--blue-b)}
+.fn{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px 20px;box-shadow:var(--sh);transition:.15s}
+.fn:hover{box-shadow:var(--sh2)}
+.fn-h{display:flex;align-items:center;gap:8px;margin-bottom:5px}
+.badge{font-family:'IBM Plex Mono',monospace;font-size:9px;font-weight:700;padding:3px 8px;border-radius:5px;flex-shrink:0}
+.badge.usr{background:var(--blue-bg);color:var(--blue)}
+.badge.sys{background:var(--green-bg);color:var(--green)}
+.badge.ok{background:#d5f5e3;color:#14663a}
+.badge.no{background:var(--red-bg);color:var(--red)}
+.fn-t{font-size:13.5px;font-weight:700}
+.fn-b{font-size:12px;color:var(--muted);line-height:1.7;margin-top:3px}
+.fn-b strong{color:var(--text2);font-weight:600}
+.fn-b code{font-family:'IBM Plex Mono',monospace;font-size:9.5px;background:var(--green-bg);padding:1px 5px;border-radius:3px;color:var(--green);border:1px solid var(--green-b)}
+.branch{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.fn.win{border-color:var(--green-b)}.fn.lose{border-color:var(--red-b)}
+.diamond-wrap{display:flex;justify-content:center;padding:4px 0}
+.diamond{padding:12px 18px;background:var(--cyan-bg);border:2px solid rgba(12,112,133,.25);border-radius:8px;text-align:center;font-size:11px;font-weight:700;color:var(--cyan)}
+.fs-callout{background:#fff8e6;border:1.5px dashed var(--orange);border-radius:8px;padding:8px 14px;margin-top:6px;display:flex;align-items:center;gap:8px;font-size:11px;color:var(--orange);font-weight:600}
+
+/* CHECKLIST */
+.checklist{max-width:720px;margin:0 auto}
+.cl-group{margin-bottom:20px}
+.cl-group-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.cl-group-title .cl-icon{font-size:16px}
+.cl-item{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin-bottom:6px;box-shadow:var(--sh);display:flex;align-items:flex-start;gap:10px;cursor:pointer;transition:.15s;user-select:none}
+.cl-item:hover{box-shadow:var(--sh2)}
+.cl-item.done{opacity:.6}
+.cl-item.done .cl-text{text-decoration:line-through}
+.cl-check{width:20px;height:20px;border:2px solid var(--border2);border-radius:5px;flex-shrink:0;display:flex;align-items:center;justify-content:center;margin-top:1px;transition:.15s}
+.cl-item.done .cl-check{background:var(--green);border-color:var(--green)}
+.cl-item.done .cl-check::after{content:'✓';color:#fff;font-size:12px;font-weight:700}
+.cl-text{font-size:12.5px;color:var(--text2);line-height:1.5}
+.cl-text strong{color:var(--text);font-weight:700}
+.cl-note{font-size:11px;color:var(--orange);background:var(--orange-bg);border:1px solid var(--orange-b);border-radius:6px;padding:6px 10px;margin-top:6px;line-height:1.5}
+.cl-progress{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px 20px;box-shadow:var(--sh);margin-bottom:24px;display:flex;align-items:center;gap:14px}
+.cl-bar{flex:1;height:8px;background:var(--surface2);border-radius:10px;overflow:hidden}
+.cl-bar-fill{height:100%;background:linear-gradient(90deg,var(--green),#22c55e);border-radius:10px;transition:width .4s ease}
+.cl-pct{font-family:'IBM Plex Mono',monospace;font-size:14px;font-weight:700;color:var(--green);min-width:40px;text-align:right}
+
+/* TEST CASES */
+.tc-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin-bottom:20px}
+.tc-stat{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px;text-align:center;box-shadow:var(--sh)}
+.tc-stat .n{font-size:24px;font-weight:800}.tc-stat .l{font-size:9px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:1px}
+.tc-stat.g .n{color:var(--green)}.tc-stat.r .n{color:var(--red)}.tc-stat.b .n{color:var(--blue)}.tc-stat.o .n{color:var(--orange)}
+.tc-filters{display:flex;gap:5px;margin-bottom:14px;flex-wrap:wrap}
+.tc-fbtn{font-family:'DM Sans';font-size:11px;font-weight:600;padding:5px 12px;border:1px solid var(--border);border-radius:18px;background:var(--surface);color:var(--muted);cursor:pointer;transition:.15s}
+.tc-fbtn:hover{border-color:var(--border2);color:var(--text2)}
+.tc-fbtn.on{background:var(--green-bg);border-color:var(--green-b);color:var(--green)}
+.tc-table{width:100%;border-collapse:separate;border-spacing:0;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;box-shadow:var(--sh)}
+.tc-table thead th{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);padding:10px 14px;text-align:left;background:var(--surface2);border-bottom:1px solid var(--border)}
+.tc-table tbody td{font-size:12px;padding:10px 14px;border-bottom:1px solid var(--border);color:var(--text2);vertical-align:top;line-height:1.5}
+.tc-table tbody tr:last-child td{border-bottom:none}
+.tc-table tbody tr:hover{background:var(--surface2)}
+.tc-id{font-family:'IBM Plex Mono',monospace;font-size:9.5px;font-weight:700;white-space:nowrap}
+.tc-tag{font-family:'IBM Plex Mono',monospace;font-size:8.5px;font-weight:700;padding:2px 7px;border-radius:4px;white-space:nowrap}
+.tc-tag.happy{background:var(--green-bg);color:var(--green)}
+.tc-tag.neg{background:var(--red-bg);color:var(--red)}
+.tc-tag.pol{background:var(--purple-bg);color:var(--purple)}
+.tc-pri{font-family:'IBM Plex Mono',monospace;font-size:8.5px;font-weight:700;padding:2px 6px;border-radius:4px}
+.tc-pri.p1{background:#fce8e8;color:var(--red)}
+.tc-pri.p2{background:var(--orange-bg);color:var(--orange)}
+.tc-pri.p3{background:var(--surface2);color:var(--muted)}
+
+.ft{text-align:center;padding:24px 0 0;color:var(--muted);font-size:10px;border-top:1px solid var(--border);margin-top:32px}
+@media(max-width:768px){.main{padding:18px 14px 60px}.hdr{padding:14px}.tabs{padding:0 14px}.branch,.ac-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<header class="hdr"><div class="hdr-in">
+  <div class="logo"><div class="logo-i">🚀</div><div><h1>Bảng Điểm Arena — Đưa App Lên CH Play</h1><small>Feature Specification Document</small></div></div>
+  <div class="tags"><span class="tg v">v1.0</span><span class="tg">Android Tablet</span><span class="tg">Dev & QA</span></div>
+</div></header>
+
+<div class="tabs"><div class="tabs-in">
+  <button class="tb on" onclick="go('us')"><span class="num">1</span>📝 User Story</button>
+  <button class="tb" onclick="go('fl')"><span class="num">2</span>🔀 Flow & Checklist</button>
+  <button class="tb" onclick="go('tc')"><span class="num">3</span>🧪 Test Cases</button>
+</div></div>
+
+<div class="main">
+
+<!-- ═══ TAB 1: USER STORY ═══ -->
+<div id="p-us" class="pan on">
+  <div class="us-hero">
+    <div class="us-label">User Story</div>
+    <div class="us-title">Đưa ứng dụng Bảng Điểm Arena lên Google Play Store (CH Play)</div>
+    <div class="us-as">
+      <em>As a</em> nhà phát triển ứng dụng Bảng Điểm Arena (đã có Google Play Developer Account),<br>
+      <em>I want to</em> publish app lên Google Play Store,<br>
+      <em>So that</em> người dùng có thể tìm kiếm, tải về và cài đặt app trực tiếp từ CH Play.
+    </div>
+    <div class="info-grid">
+      <div class="info-item"><div class="il">Platform</div><div class="iv">Android (Native)</div></div>
+      <div class="info-item"><div class="il">Device</div><div class="iv">Tablet (Landscape)</div></div>
+      <div class="info-item"><div class="il">Phân phối</div><div class="iv">Google Play Store</div></div>
+      <div class="info-item"><div class="il">Tài khoản</div><div class="iv">Đã có sẵn ✅</div></div>
+    </div>
+  </div>
+
+  <div class="sec">Actors</div>
+  <div class="act-grid">
+    <div class="act"><div class="act-i u">👨‍💻</div><div><h3>Developer</h3><p>Build, ký app, upload lên Play Console</p></div></div>
+    <div class="act"><div class="act-i s">🏪</div><div><h3>Google Play Console</h3><p>Quản lý listing, review & phân phối app</p></div></div>
+    <div class="act"><div class="act-i h">📱</div><div><h3>Người dùng cuối</h3><p>Tìm kiếm & tải app từ CH Play</p></div></div>
+  </div>
+
+  <div class="sec">Acceptance Criteria</div>
+  <div class="ac-grid">
+    <div class="ac-card">
+      <h4><span class="ac-num">1</span> Build & Ký App</h4>
+      <div class="ac-line"><span class="ac-kw kw-g">GIVEN</span> Source code đã sẵn sàng, không có lỗi</div>
+      <div class="ac-line"><span class="ac-kw kw-w">WHEN</span> Build release AAB và ký bằng upload key</div>
+      <div class="ac-line"><span class="ac-kw kw-t">THEN</span> File .aab được tạo thành công, sẵn sàng upload</div>
+    </div>
+    <div class="ac-card">
+      <h4><span class="ac-num">2</span> Store Listing đầy đủ</h4>
+      <div class="ac-line"><span class="ac-kw kw-g">GIVEN</span> Đã chuẩn bị icon, screenshots, mô tả, privacy policy</div>
+      <div class="ac-line"><span class="ac-kw kw-w">WHEN</span> Điền đầy đủ Store Listing trên Play Console</div>
+      <div class="ac-line"><span class="ac-kw kw-t">THEN</span> Tất cả mục bắt buộc đều ✅ xanh, không có warning</div>
+    </div>
+    <div class="ac-card">
+      <h4><span class="ac-num">3</span> App Published thành công</h4>
+      <div class="ac-line"><span class="ac-kw kw-g">GIVEN</span> App đã qua review của Google</div>
+      <div class="ac-line"><span class="ac-kw kw-w">WHEN</span> Trạng thái chuyển sang "Published"</div>
+      <div class="ac-line"><span class="ac-kw kw-t">THEN</span> Người dùng tìm và tải app từ CH Play thành công</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ TAB 2: FLOW & CHECKLIST ═══ -->
+<div id="p-fl" class="pan">
+  <div class="sec">Flow tổng quan</div>
+  <div class="flow">
+
+    <div class="fn">
+      <div class="fn-h"><span class="badge usr">DEVELOPER</span><span class="fn-t">1. Chuẩn bị tài nguyên (Assets)</span></div>
+      <div class="fn-b">
+        <strong>App Icon:</strong> 512×512 px, PNG, 32-bit, không bo góc (Google tự bo)<br>
+        <strong>Feature Graphic:</strong> 1024×500 px (banner trên Store)<br>
+        <strong>Screenshots:</strong> tối thiểu 2, khuyến nghị 4-8 ảnh. App tablet ngang → screenshot landscape 16:9/16:10<br>
+        <strong>Mô tả ngắn:</strong> ≤ 80 ký tự · <strong>Mô tả dài:</strong> ≤ 4000 ký tự<br>
+        <strong>Privacy Policy URL:</strong> bắt buộc — host trên web
+      </div>
+      <div class="fs-callout">⚠️ Screenshot tablet bắt buộc nếu app hỗ trợ tablet. Thiếu sẽ bị reject.</div>
+    </div>
+    <div class="conn"><span class="conn-lbl ok">Assets ready</span></div>
+
+    <div class="fn">
+      <div class="fn-h"><span class="badge usr">DEVELOPER</span><span class="fn-t">2. Build Release AAB & Ký App</span></div>
+      <div class="fn-b">
+        Android Studio: <code>Build → Generate Signed Bundle</code><br>
+        <strong>Dùng Android App Bundle (.aab)</strong> — Google yêu cầu từ 08/2021, không nhận .apk.<br>
+        Tạo <strong>upload keystore</strong> (.jks) nếu chưa có. Bật <strong>Play App Signing</strong> (khuyến nghị).
+      </div>
+      <div class="fs-callout">🚨 PHẢI backup keystore + ghi nhớ password. Mất keystore = phải tạo app mới hoàn toàn.</div>
+    </div>
+    <div class="conn"><span class="conn-lbl ok">.aab ready</span></div>
+
+    <div class="fn">
+      <div class="fn-h"><span class="badge usr">DEVELOPER</span><span class="fn-t">3. Tạo App & Cấu hình trên Play Console</span></div>
+      <div class="fn-b">
+        <strong>Create App</strong> → Điền tên, ngôn ngữ, loại app, miễn phí/trả phí.<br>
+        Hoàn tất Dashboard checklist:<br>
+        • <strong>App access</strong> — cung cấp tài khoản test nếu app cần đăng nhập<br>
+        • <strong>Content rating</strong> — điền bảng khảo sát IARC<br>
+        • <strong>Target audience</strong> — chọn nhóm tuổi phù hợp<br>
+        • <strong>Data safety</strong> — khai báo dữ liệu app thu thập<br>
+        • <strong>Ads declaration</strong> — có quảng cáo hay không<br>
+        • <strong>Store listing</strong> — upload icon, screenshots, mô tả
+      </div>
+    </div>
+    <div class="conn"><span class="conn-lbl info">Checklist ✅</span></div>
+
+    <div class="fn">
+      <div class="fn-h"><span class="badge usr">DEVELOPER</span><span class="fn-t">4. Upload AAB & Chọn Release Track</span></div>
+      <div class="fn-b">
+        <strong>Khuyến nghị:</strong> test qua <strong>Internal Testing</strong> trước (100 người, approve ngay).<br>
+        Khi OK → <strong>Production</strong> → Create release → Upload .aab → Release notes → Submit.
+      </div>
+      <div class="fs-callout">⏱ App mới lần đầu: review 1-7 ngày (trung bình 1-3 ngày). Update sau nhanh hơn.</div>
+    </div>
+    <div class="conn"><span class="conn-lbl info">Submitted</span></div>
+
+    <div class="diamond-wrap"><div class="diamond">Google Review — Kết quả?</div></div>
+    <div class="conn"></div>
+    <div class="branch">
+      <div class="fn win">
+        <div class="fn-h"><span class="badge ok">✓ APPROVED</span><span class="fn-t">App Live trên CH Play</span></div>
+        <div class="fn-b">App xuất hiện trên Store. Có thể mất thêm vài giờ để index toàn bộ.</div>
+      </div>
+      <div class="fn lose">
+        <div class="fn-h"><span class="badge no">✗ REJECTED</span><span class="fn-t">App bị từ chối</span></div>
+        <div class="fn-b">Xem lý do reject → sửa lỗi → re-submit. Phổ biến: thiếu privacy policy, vi phạm policy, metadata sai.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec" style="margin-top:40px">Checklist chi tiết — Click để đánh dấu hoàn thành</div>
+  <div class="checklist">
+    <div class="cl-progress">
+      <div class="cl-bar"><div class="cl-bar-fill" id="cl-fill" style="width:0%"></div></div>
+      <div class="cl-pct" id="cl-pct">0%</div>
+    </div>
+
+    <div class="cl-group">
+      <div class="cl-group-title"><span class="cl-icon">🎨</span> Chuẩn bị Assets</div>
+      <div class="cl-item" onclick="togCl(this)"><div class="cl-check"></div><div><div class="cl-text"><strong>App Icon</strong> — 512×512 px, PNG 32-bit, KHÔNG bo góc</div></div></div>
+      <div class="cl-item" onclick="togCl(this)"><div class="cl-check"></div><div><div class="cl-text"><strong>Feature Graphic</strong> — 1024×500 px, JPEG/PNG</div></div></div>
+      <div class="cl-item" onclick="togCl(this)"><div class="cl-check"></div><div><div class="cl-text"><strong>Screenshots tablet landscape</strong> — tối thiểu 2, khuyến nghị 4-8 ảnh</div><div class="cl-note">⚠️ Bắt buộc có screenshot tablet nếu app hỗ trợ tablet. Thiếu = reject.</div></div></div>
+      <div class="cl-item" onclick="togCl(this)"><div class="cl-check"></div><div><div class="cl-text"><strong>Mô tả ngắn</strong> (≤ 80 ký tự) và <strong>Mô tả dài</strong> (≤ 4000 ký tự)</div></div></div>
+      <div class="cl-item" onclick="togCl(this)"><div class="cl-check"></div><div><div class="cl-text"><strong>Privacy Policy URL</strong> — host trên web (VD: arenabilliard.com/privacy)</div><div class="cl-note">⚠️ Không có Privacy Policy = reject chắc chắn.</div></div></div>
+    </div>
+
+    <div class="cl-group">
+      <div class="cl-group-title"><span class="cl-icon">🔐</span> Build & Signing</div>
+      <div class="cl-item" onclick="togCl(this)"><div class="cl-check"></div><div><div class="cl-text"><strong>Tạo Keystore (.jks)</strong> — lưu file, alias, password cẩn thận</div><div class="cl-note">🚨 Mất keystore = không update app được, phải tạo app mới với package name mới!</div></div></div>
+      <div class="cl-item" onclick="togCl(this)"><div class="cl-check"></div><div><div class="cl-text"><strong>Bật Play App Signing</strong> — Google giữ signing key, dev giữ upload key</div></div></div>
+      <div class="cl-item" onclick="togCl(this)"><div class="cl-check"></div><div><div class="cl-text"><strong>Build AAB</strong> — Build → Generate Signed Bundle (không dùng .apk)</div></div></div>
+      <div class="cl-item" onclick="togCl(this)"><div class="cl-check"></div><div><div class="cl-text"><strong>Kiểm tra versionCode & versionName</strong> — mỗi lần update phải tăng versionCode</div></div></div>
+    </div>
+
+    <div class="cl-group">
+      <div class="cl-group-title"><span class="cl-icon">⚙️</span> Cấu hình Play Console</div>
+      <div class="cl-item" onclick="togCl(this)"><div class="cl-check"></div><div><div class="cl-text"><strong>App access</strong> — cung cấp tài khoản test nếu app cần đăng nhập</div><div class="cl-note">⚠️ Reviewer không vào được app → reject.</div></div></div>
+      <div class="cl-item" onclick="togCl(this)"><div class="cl-check"></div><div><div class="cl-text"><strong>Content Rating</strong> — điền bảng khảo sát IARC trung thực</div></div></div>
+      <div class="cl-item" onclick="togCl(this)"><div class="cl-check"></div><div><div class="cl-text"><strong>Target Audience</strong> — KHÔNG chọn dưới 13 tuổi trừ khi comply COPPA</div></div></div>
+      <div class="cl-item" onclick="togCl(this)"><div class="cl-check"></div><div><div class="cl-text"><strong>Data Safety</strong> — khai báo trung thực, khớp với Privacy Policy</div></div></div>
+      <div class="cl-item" onclick="togCl(this)"><div class="cl-check"></div><div><div class="cl-text"><strong>Ads Declaration</strong> — khai báo có/không hiển thị quảng cáo</div></div></div>
+      <div class="cl-item" onclick="togCl(this)"><div class="cl-check"></div><div><div class="cl-text"><strong>Store Listing</strong> — upload đầy đủ, tất cả mục ✅ xanh</div></div></div>
+    </div>
+
+    <div class="cl-group">
+      <div class="cl-group-title"><span class="cl-icon">🚀</span> Release</div>
+      <div class="cl-item" onclick="togCl(this)"><div class="cl-check"></div><div><div class="cl-text"><strong>Internal Testing</strong> — upload .aab, thêm testers, test trước</div></div></div>
+      <div class="cl-item" onclick="togCl(this)"><div class="cl-check"></div><div><div class="cl-text"><strong>Test trên thiết bị thật</strong> — tải từ Internal Testing, test đầy đủ trên tablet</div></div></div>
+      <div class="cl-item" onclick="togCl(this)"><div class="cl-check"></div><div><div class="cl-text"><strong>Promote lên Production</strong> — submit for review</div><div class="cl-note">⏱ App mới: review 1-7 ngày. Update sau nhanh hơn.</div></div></div>
+      <div class="cl-item" onclick="togCl(this)"><div class="cl-check"></div><div><div class="cl-text"><strong>Verify trên Store</strong> — tìm app trên CH Play, tải thử, confirm OK</div></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ TAB 3: TEST CASES ═══ -->
+<div id="p-tc" class="pan">
+  <div class="tc-stats">
+    <div class="tc-stat g"><div class="n">5</div><div class="l">Happy Path</div></div>
+    <div class="tc-stat r"><div class="n">5</div><div class="l">Negative</div></div>
+    <div class="tc-stat b"><div class="n">3</div><div class="l">Policy</div></div>
+    <div class="tc-stat o"><div class="n">13</div><div class="l">Tổng cộng</div></div>
+  </div>
+
+  <div class="tc-filters">
+    <button class="tc-fbtn on" onclick="flt('all',this)">Tất cả</button>
+    <button class="tc-fbtn" onclick="flt('happy',this)">✅ Happy</button>
+    <button class="tc-fbtn" onclick="flt('neg',this)">❌ Negative</button>
+    <button class="tc-fbtn" onclick="flt('policy',this)">📋 Policy</button>
+  </div>
+
+  <table class="tc-table" id="tc-tbl">
+    <thead><tr><th>ID</th><th>Loại</th><th>Ưu tiên</th><th>Tiêu đề</th><th>Bước thực hiện</th><th>Kết quả mong đợi</th></tr></thead>
+    <tbody>
+      <tr data-cat="happy"><td class="tc-id">TC-01</td><td><span class="tc-tag happy">HAPPY</span></td><td><span class="tc-pri p1">P1</span></td><td>Build AAB thành công</td><td>Android Studio → Generate Signed Bundle → Chọn keystore → Build</td><td>File .aab tạo thành công, không lỗi</td></tr>
+      <tr data-cat="happy"><td class="tc-id">TC-02</td><td><span class="tc-tag happy">HAPPY</span></td><td><span class="tc-pri p1">P1</span></td><td>Store Listing đầy đủ</td><td>Điền tên, mô tả, upload icon, feature graphic, screenshots tablet</td><td>Tất cả mục ✅ xanh, không warning</td></tr>
+      <tr data-cat="happy"><td class="tc-id">TC-03</td><td><span class="tc-tag happy">HAPPY</span></td><td><span class="tc-pri p1">P1</span></td><td>Upload & submit for review</td><td>Production → Create release → Upload .aab → Release notes → Submit</td><td>Release submitted, chờ review</td></tr>
+      <tr data-cat="happy"><td class="tc-id">TC-04</td><td><span class="tc-tag happy">HAPPY</span></td><td><span class="tc-pri p1">P1</span></td><td>App approved & live</td><td>Chờ review → Status = Published</td><td>App hiển thị trên CH Play, tải được</td></tr>
+      <tr data-cat="happy"><td class="tc-id">TC-05</td><td><span class="tc-tag happy">HAPPY</span></td><td><span class="tc-pri p2">P2</span></td><td>Internal Testing thành công</td><td>Upload .aab vào Internal Testing → Thêm testers → Test</td><td>Testers tải app qua link, hoạt động đúng trên tablet</td></tr>
+
+      <tr data-cat="neg"><td class="tc-id">TC-06</td><td><span class="tc-tag neg">NEGATIVE</span></td><td><span class="tc-pri p1">P1</span></td><td>Thiếu Privacy Policy</td><td>Submit app không có Privacy Policy URL</td><td>Google reject, yêu cầu có Privacy Policy</td></tr>
+      <tr data-cat="neg"><td class="tc-id">TC-07</td><td><span class="tc-tag neg">NEGATIVE</span></td><td><span class="tc-pri p1">P1</span></td><td>Upload APK thay vì AAB</td><td>Upload file .apk vào Production</td><td>Play Console từ chối, yêu cầu .aab</td></tr>
+      <tr data-cat="neg"><td class="tc-id">TC-08</td><td><span class="tc-tag neg">NEGATIVE</span></td><td><span class="tc-pri p1">P1</span></td><td>Mất keystore — không update được</td><td>Update app nhưng không có keystore gốc</td><td>Không upload được, phải tạo app mới với package name mới</td></tr>
+      <tr data-cat="neg"><td class="tc-id">TC-09</td><td><span class="tc-tag neg">NEGATIVE</span></td><td><span class="tc-pri p2">P2</span></td><td>Thiếu screenshot tablet</td><td>Chỉ upload screenshot phone</td><td>Warning/reject vì app declare tablet nhưng thiếu screenshot</td></tr>
+      <tr data-cat="neg"><td class="tc-id">TC-10</td><td><span class="tc-tag neg">NEGATIVE</span></td><td><span class="tc-pri p2">P2</span></td><td>App crash khi reviewer test</td><td>App có bug → reviewer phát hiện crash</td><td>Reject lý do "App Stability", cần fix & re-submit</td></tr>
+
+      <tr data-cat="policy"><td class="tc-id">TC-11</td><td><span class="tc-tag pol">POLICY</span></td><td><span class="tc-pri p1">P1</span></td><td>Content Rating chính xác</td><td>Điền bảng IARC trung thực</td><td>Rating phù hợp (VD: Everyone), không bị flag</td></tr>
+      <tr data-cat="policy"><td class="tc-id">TC-12</td><td><span class="tc-tag pol">POLICY</span></td><td><span class="tc-pri p1">P1</span></td><td>Data Safety khai báo đúng</td><td>Khai báo khớp thực tế + Privacy Policy</td><td>Không bị flag, Data Safety hiển thị đúng trên Store</td></tr>
+      <tr data-cat="policy"><td class="tc-id">TC-13</td><td><span class="tc-tag pol">POLICY</span></td><td><span class="tc-pri p2">P2</span></td><td>Target Audience phù hợp</td><td>Chọn ≥ 13 tuổi, không trigger COPPA</td><td>Không bị yêu cầu comply Families Policy</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="ft">Bảng Điểm Arena — Đưa App Lên CH Play Spec v1.0 · Dev & QA</div>
+</div>
+
+<script>
+function go(id){
+  document.querySelectorAll('.pan').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.tb').forEach(t=>t.classList.remove('on'));
+  document.getElementById('p-'+id).classList.add('on');
+  const m={us:'User Story',fl:'Flow',tc:'Test'};
+  document.querySelectorAll('.tb').forEach(t=>{if(t.textContent.includes(m[id]))t.classList.add('on')});
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function togCl(el){
+  el.classList.toggle('done');
+  const all=document.querySelectorAll('.cl-item');
+  const done=document.querySelectorAll('.cl-item.done');
+  const pct=Math.round((done.length/all.length)*100);
+  document.getElementById('cl-fill').style.width=pct+'%';
+  document.getElementById('cl-pct').textContent=pct+'%';
+}
+
+function flt(cat,btn){
+  document.querySelectorAll('.tc-fbtn').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  document.querySelectorAll('#tc-tbl tbody tr').forEach(r=>{
+    r.style.display=(cat==='all'||r.dataset.cat===cat)?'':'none';
+  });
+}
+</script>
+</body>
+</html>

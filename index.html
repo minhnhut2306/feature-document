@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Feature Documents</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #0a1228;
+      color: #e0e8ff;
+      min-height: 100vh;
+      padding: 32px 24px;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 24px;
+      color: #008cff;
+      margin-bottom: 32px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    /* Breadcrumb */
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 24px;
+      font-size: 14px;
+      color: #6080aa;
+      min-height: 24px;
+    }
+    .breadcrumb span { cursor: pointer; color: #008cff; }
+    .breadcrumb span:hover { text-decoration: underline; }
+    .breadcrumb .sep { color: #334466; }
+
+    /* Grid */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 16px;
+    }
+
+    .card {
+      background: #101e3a;
+      border: 1px solid #1e3060;
+      border-radius: 12px;
+      padding: 24px 16px;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.2s;
+      user-select: none;
+    }
+    .card:hover {
+      border-color: #008cff;
+      background: #152440;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 20px rgba(0,140,255,0.15);
+    }
+    .card .icon { font-size: 36px; margin-bottom: 12px; }
+    .card .label { font-size: 15px; font-weight: 600; color: #c0d8ff; }
+    .card .sub { font-size: 12px; color: #4a6080; margin-top: 4px; }
+
+    /* Task cards */
+    .task-card {
+      background: #101e3a;
+      border: 1px solid #1e3060;
+      border-radius: 12px;
+      padding: 20px;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .task-card:hover {
+      border-color: #008cff;
+      background: #152440;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 20px rgba(0,140,255,0.15);
+    }
+    .task-card .icon { font-size: 28px; }
+    .task-card .info .name { font-size: 15px; font-weight: 600; color: #c0d8ff; }
+    .task-card .info .path { font-size: 12px; color: #4a6080; margin-top: 4px; }
+
+    .task-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .empty { text-align: center; color: #334466; padding: 48px; font-size: 14px; }
+  </style>
+</head>
+<body>
+
+<h1>📋 Feature Documents</h1>
+<div class="breadcrumb" id="breadcrumb"></div>
+<div id="content"></div>
+
+<script>
+  // Cấu trúc dữ liệu — thêm file mới vào đây
+  const data = {
+    "2026": {
+      "Q2": [
+        { name: "Đưa App Lên CH Play",        file: "2026/Q2/dua-app-len-chplay-spec.html" },
+        { name: "UX/UI Mission Màn Chiếu",     file: "2026/Q2/ux-ui-mission-may-chieu-spec.html" },
+        { name: "Tracking Active",             file: "2026/Q2/tracking-active-spec.html" },
+        { name: "Popup Error",                 file: "2026/Q2/popup-error-spec.html" },
+      ]
+    }
+  };
+
+  let state = { year: null, quarter: null };
+
+  function render() {
+    renderBreadcrumb();
+    const el = document.getElementById('content');
+
+    if (!state.year) {
+      // Hiện danh sách năm
+      const years = Object.keys(data).sort();
+      el.innerHTML = `<div class="grid">${years.map(y => `
+        <div class="card" onclick="selectYear('${y}')">
+          <div class="icon">📅</div>
+          <div class="label">${y}</div>
+          <div class="sub">${Object.keys(data[y]).length} quý</div>
+        </div>`).join('')}</div>`;
+
+    } else if (!state.quarter) {
+      // Hiện danh sách quý
+      const quarters = Object.keys(data[state.year]).sort();
+      el.innerHTML = `<div class="grid">${quarters.map(q => `
+        <div class="card" onclick="selectQuarter('${q}')">
+          <div class="icon">🗂️</div>
+          <div class="label">${q}</div>
+          <div class="sub">${data[state.year][q].length} task</div>
+        </div>`).join('')}</div>`;
+
+    } else {
+      // Hiện danh sách task
+      const tasks = data[state.year][state.quarter];
+      if (!tasks || tasks.length === 0) {
+        el.innerHTML = `<div class="empty">Chưa có task nào</div>`;
+        return;
+      }
+      el.innerHTML = `<div class="task-grid">${tasks.map(t => `
+        <div class="task-card" onclick="openFile('${t.file}')">
+          <div class="icon">📄</div>
+          <div class="info">
+            <div class="name">${t.name}</div>
+            <div class="path">${t.file}</div>
+          </div>
+        </div>`).join('')}</div>`;
+    }
+  }
+
+  function renderBreadcrumb() {
+    const el = document.getElementById('breadcrumb');
+    let html = `<span onclick="goHome()">🏠 Home</span>`;
+    if (state.year) {
+      html += `<span class="sep">›</span><span onclick="selectYear('${state.year}')">${state.year}</span>`;
+    }
+    if (state.quarter) {
+      html += `<span class="sep">›</span><span>${state.quarter}</span>`;
+    }
+    el.innerHTML = html;
+  }
+
+  function goHome()            { state = { year: null, quarter: null }; render(); }
+  function selectYear(y)       { state = { year: y, quarter: null };    render(); }
+  function selectQuarter(q)    { state.quarter = q;                     render(); }
+  function openFile(path)      { window.open(path, '_blank'); }
+
+  render();
+</script>
+</body>
+</html>

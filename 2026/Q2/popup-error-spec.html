@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pop-up Lỗi — Arena Scoreboard</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f4f2ee;--surface:#fff;--surface2:#faf9f6;--border:#e2dfda;--border2:#d0cdc6;
+  --text:#18150f;--text2:#3b362d;--muted:#8a8278;
+  --green:#1a7a4a;--green-bg:#e6f5ed;--green-b:rgba(26,122,74,.2);
+  --blue:#2260a8;--blue-bg:#e7f0fa;--blue-b:rgba(34,96,168,.2);
+  --orange:#a85b0d;--orange-bg:#fef4e5;--orange-b:rgba(168,91,13,.15);
+  --red:#b53535;--red-bg:#fce8e8;--red-b:rgba(181,53,53,.18);
+  --purple:#6846a8;--purple-bg:#f0eaf8;--purple-b:rgba(104,70,168,.15);
+  --cyan:#0c7085;--cyan-bg:#e4f5f9;
+  --r:10px;--sh:0 1px 4px rgba(24,21,15,.06);--sh2:0 4px 20px rgba(24,21,15,.08);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;line-height:1.6}
+
+.hdr{background:var(--surface);border-bottom:1px solid var(--border);padding:16px 32px;position:sticky;top:0;z-index:200;box-shadow:var(--sh)}
+.hdr-in{max-width:1320px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.logo{display:flex;align-items:center;gap:10px}
+.logo-i{width:34px;height:34px;background:linear-gradient(135deg,#1a2d52,#2a4a7a);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;color:#fff;box-shadow:0 2px 8px rgba(26,45,82,.3)}
+.logo h1{font-size:16px;font-weight:800;letter-spacing:-.3px}
+.logo small{font-size:10px;color:var(--muted);font-weight:500}
+.tags{display:flex;gap:7px;flex-wrap:wrap}
+.tg{font-family:'IBM Plex Mono',monospace;font-size:9px;padding:3px 9px;border-radius:5px;background:var(--surface2);border:1px solid var(--border);color:var(--muted);font-weight:600;letter-spacing:.5px;text-transform:uppercase}
+.tg.v{color:var(--green);border-color:var(--green-b);background:var(--green-bg)}
+
+.tabs{background:var(--surface);border-bottom:1px solid var(--border);padding:0 32px;overflow-x:auto}
+.tabs-in{max-width:1320px;margin:0 auto;display:flex;gap:0}
+.tb{font-family:'DM Sans',sans-serif;font-size:12.5px;font-weight:600;padding:12px 20px;border:none;background:none;color:var(--muted);cursor:pointer;border-bottom:2.5px solid transparent;transition:.2s;white-space:nowrap;display:flex;align-items:center;gap:6px}
+.tb:hover{color:var(--text2)}
+.tb.on{color:var(--green);border-bottom-color:var(--green)}
+.tb .num{font-family:'IBM Plex Mono',monospace;font-size:9px;font-weight:700;background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:1px 5px}
+.tb.on .num{background:var(--green-bg);border-color:var(--green-b);color:var(--green)}
+
+.main{max-width:1320px;margin:0 auto;padding:28px 32px 80px}
+.pan{display:none}.pan.on{display:block}
+.sec{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin:28px 0 14px;display:flex;align-items:center;gap:10px}
+.sec::after{content:'';flex:1;height:1px;background:var(--border)}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:20px 24px;box-shadow:var(--sh);margin-bottom:12px}
+
+/* TAB 1 */
+.us-hero{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:26px 30px;box-shadow:var(--sh);margin-bottom:20px;position:relative;overflow:hidden}
+.us-hero::before{content:'';position:absolute;top:0;left:0;width:5px;height:100%;background:var(--green)}
+.us-label{font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:700;color:var(--green);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px}
+.us-title{font-size:17px;font-weight:800;color:var(--text);margin-bottom:6px;line-height:1.4}
+.us-as{font-size:13.5px;color:var(--text2);line-height:1.8}
+.us-as em{font-style:italic;color:var(--green);font-weight:600}
+.info-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:8px;margin-top:14px}
+.info-item{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px 14px}
+.info-item .il{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:3px}
+.info-item .iv{font-size:12.5px;font-weight:600;color:var(--text)}
+.act-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+.act{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:13px 16px;display:flex;align-items:center;gap:11px;box-shadow:var(--sh)}
+.act-i{width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.act-i.u{background:var(--blue-bg)}.act-i.s{background:var(--green-bg)}.act-i.h{background:var(--orange-bg)}.act-i.c{background:var(--purple-bg)}
+.act h3{font-size:12px;font-weight:700}.act p{font-size:10.5px;color:var(--muted);margin-top:1px}
+.ac-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:10px}
+.ac-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px 20px;box-shadow:var(--sh)}
+.ac-card h4{font-size:12px;font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.ac-num{font-family:'IBM Plex Mono',monospace;font-size:9px;font-weight:700;width:20px;height:20px;border-radius:5px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:var(--blue-bg);color:var(--blue)}
+.ac-line{font-size:12px;color:var(--text2);line-height:1.6;padding:3px 0;border-bottom:1px solid var(--border);display:flex;gap:7px}
+.ac-line:last-child{border:none}
+.ac-kw{font-family:'IBM Plex Mono',monospace;font-size:9px;font-weight:700;padding:2px 6px;border-radius:4px;flex-shrink:0;margin-top:1px}
+.kw-g{background:var(--blue-bg);color:var(--blue)}.kw-w{background:var(--orange-bg);color:var(--orange)}.kw-t{background:var(--green-bg);color:var(--green)}.kw-a{background:var(--surface2);color:var(--muted)}
+
+/* TAB 2 */
+.flow{display:flex;flex-direction:column;gap:0}
+.conn{display:flex;align-items:center;justify-content:center;position:relative;min-height:28px;padding:2px 0}
+.conn::before{content:'';width:2px;height:100%;background:var(--border2);position:absolute;left:50%;transform:translateX(-50%)}
+.conn-lbl{position:relative;z-index:1;font-family:'IBM Plex Mono',monospace;font-size:9.5px;font-weight:600;padding:3px 11px;border-radius:20px;border:1px solid;white-space:nowrap}
+.conn-lbl.ok{color:var(--green);background:var(--green-bg);border-color:var(--green-b)}
+.conn-lbl.no{color:var(--red);background:var(--red-bg);border-color:var(--red-b)}
+.conn-lbl.info{color:var(--blue);background:var(--blue-bg);border-color:var(--blue-b)}
+.fn{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px 20px;box-shadow:var(--sh);transition:.15s}
+.fn:hover{box-shadow:var(--sh2)}
+.fn-h{display:flex;align-items:center;gap:8px;margin-bottom:5px}
+.badge{font-family:'IBM Plex Mono',monospace;font-size:9px;font-weight:700;padding:3px 8px;border-radius:5px;flex-shrink:0}
+.badge.usr{background:var(--blue-bg);color:var(--blue)}
+.badge.sys{background:var(--green-bg);color:var(--green)}
+.badge.hw{background:var(--orange-bg);color:var(--orange)}
+.badge.cam{background:var(--purple-bg);color:var(--purple)}
+.badge.ok{background:#d5f5e3;color:#14663a}
+.badge.no{background:var(--red-bg);color:var(--red)}
+.fn-t{font-size:13.5px;font-weight:700}
+.fn-b{font-size:12px;color:var(--muted);line-height:1.7;margin-top:3px}
+.fn-b strong{color:var(--text2);font-weight:600}
+.fn-b code{font-family:'IBM Plex Mono',monospace;font-size:9.5px;background:var(--green-bg);padding:1px 5px;border-radius:3px;color:var(--green);border:1px solid var(--green-b)}
+.branch{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.fn.win{border-color:var(--green-b)}.fn.lose{border-color:var(--red-b)}
+.diamond-wrap{display:flex;justify-content:center;padding:4px 0}
+.diamond{padding:12px 18px;background:var(--cyan-bg);border:2px solid rgba(12,112,133,.25);border-radius:8px;text-align:center;font-size:11px;font-weight:700;color:var(--cyan)}
+.fs-callout{background:#fff8e6;border:1.5px dashed var(--orange);border-radius:8px;padding:8px 14px;margin-top:6px;display:flex;align-items:center;gap:8px;font-size:11px;color:var(--orange);font-weight:600}
+
+/* TAB 3 */
+.sim-wrap{display:flex;gap:24px;align-items:flex-start}
+.dev-frame{flex-shrink:0;position:sticky;top:110px;width:780px}
+.dev-shell{background:#0a0e18;border-radius:20px;padding:10px;box-shadow:0 8px 40px rgba(0,0,0,.25)}
+.dev-notch{width:50px;height:4px;background:#1a1f2e;border-radius:10px;margin:0 auto 6px}
+.dev-scr{border-radius:12px;overflow:hidden;height:480px;position:relative}
+.scr{display:none;width:100%;height:100%;position:absolute;top:0;left:0;animation:scrIn .3s ease}
+.scr.on{display:block}
+@keyframes scrIn{from{opacity:0;transform:scale(.98)}to{opacity:1;transform:scale(1)}}
+.abtn{display:block;width:100%;padding:10px;border:none;border-radius:8px;font-family:'DM Sans';font-size:13px;font-weight:700;cursor:pointer;transition:.15s;text-align:center;margin-top:10px}
+.abtn.pr{background:linear-gradient(135deg,#3b8bff,#2563eb);color:#fff;box-shadow:0 3px 12px rgba(37,99,235,.35)}
+.abtn.pr:hover{filter:brightness(1.1);transform:translateY(-1px)}
+.abtn.gh{background:rgba(255,255,255,.06);border:1px solid rgba(100,160,255,.2);color:#e8ecf4}
+.abtn.suc{background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff}
+.abtn.fai{background:rgba(255,255,255,.06);border:1px solid rgba(255,100,100,.25);color:#fca5a5}
+.sim-side{flex:1;min-width:0}
+.smap{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px 18px;box-shadow:var(--sh);position:sticky;top:110px}
+.smap h3{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;color:var(--muted);margin-bottom:10px}
+.ms{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:7px;cursor:pointer;transition:.15s;margin-bottom:1px;font-size:12px;color:var(--muted);font-weight:500}
+.ms:hover{background:var(--surface2);color:var(--text2)}
+.ms.on{background:var(--green-bg);color:var(--green);font-weight:700}
+.ms.vis .mn2{background:var(--green);color:#fff}
+.mn2{font-family:'IBM Plex Mono',monospace;font-size:9px;font-weight:700;width:21px;height:21px;border-radius:5px;display:flex;align-items:center;justify-content:center;background:var(--surface2);border:1px solid var(--border);flex-shrink:0;transition:.2s}
+.ms.on .mn2{background:var(--green);color:#fff;border-color:var(--green)}
+.mcv{width:2px;height:7px;background:var(--border);margin:0 0 0 20px}
+.mbr{display:flex;gap:4px;margin-left:20px;margin-top:2px}
+.mbr .ms{flex:1;font-size:10px;padding:6px 8px}
+.sim-hint{margin-top:12px;padding:10px 12px;background:var(--orange-bg);border:1px solid var(--orange-b);border-radius:7px;font-size:10.5px;color:var(--orange);font-weight:600;line-height:1.6}
+.sdesc{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px 18px;box-shadow:var(--sh);margin-top:12px}
+.sdesc h3{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;color:var(--muted);margin-bottom:6px}
+#desc-c{font-size:12px;color:var(--text2);line-height:1.7}
+
+/* TAB 4 */
+.tc-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin-bottom:20px}
+.tc-stat{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px;text-align:center;box-shadow:var(--sh)}
+.tc-stat .n{font-size:24px;font-weight:800}.tc-stat .l{font-size:9px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:1px}
+.tc-stat.g .n{color:var(--green)}.tc-stat.r .n{color:var(--red)}.tc-stat.b .n{color:var(--blue)}.tc-stat.o .n{color:var(--orange)}
+.tc-filters{display:flex;gap:5px;margin-bottom:14px;flex-wrap:wrap}
+.tc-fbtn{font-family:'DM Sans';font-size:11px;font-weight:600;padding:5px 12px;border:1px solid var(--border);border-radius:18px;background:var(--surface);color:var(--muted);cursor:pointer;transition:.15s}
+.tc-fbtn:hover{border-color:var(--border2);color:var(--text2)}
+.tc-fbtn.on{background:var(--green-bg);border-color:var(--green-b);color:var(--green)}
+.tc-table{width:100%;border-collapse:separate;border-spacing:0;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;box-shadow:var(--sh)}
+.tc-table thead th{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);padding:10px 14px;text-align:left;background:var(--surface2);border-bottom:1px solid var(--border)}
+.tc-table tbody td{font-size:12px;padding:10px 14px;border-bottom:1px solid var(--border);color:var(--text2);vertical-align:top;line-height:1.5}
+.tc-table tbody tr:last-child td{border-bottom:none}
+.tc-table tbody tr:hover{background:var(--surface2)}
+.tc-id{font-family:'IBM Plex Mono',monospace;font-size:9.5px;font-weight:700;white-space:nowrap}
+.tc-tag{font-family:'IBM Plex Mono',monospace;font-size:8.5px;font-weight:700;padding:2px 7px;border-radius:4px;white-space:nowrap}
+.tc-tag.happy{background:var(--green-bg);color:var(--green)}
+.tc-tag.neg{background:var(--red-bg);color:var(--red)}
+.tc-tag.hw{background:var(--purple-bg);color:var(--purple)}
+.tc-tag.perf{background:var(--blue-bg);color:var(--blue)}
+.tc-pri{font-family:'IBM Plex Mono',monospace;font-size:8.5px;font-weight:700;padding:2px 6px;border-radius:4px}
+.tc-pri.p1{background:#fce8e8;color:var(--red)}
+.tc-pri.p2{background:var(--orange-bg);color:var(--orange)}
+.tc-pri.p3{background:var(--surface2);color:var(--muted)}
+
+.ft{text-align:center;padding:24px 0 0;color:var(--muted);font-size:10px;border-top:1px solid var(--border);margin-top:32px}
+
+/* Simulation scoreboard styles */
+.sb-bg{width:100%;height:100%;background:#0d1117;display:flex;position:relative;font-family:'DM Sans',sans-serif}
+.sb-p{flex:0 0 22%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px}
+.sb-p.p1{background:#0d1117}.sb-p.p2{background:#c8a20c}
+.sb-p .pname{font-size:13px;font-weight:800;color:#fff;margin-bottom:4px}
+.sb-p .pscore{font-size:72px;font-weight:900;color:#fff;line-height:1}
+.sb-p .pbtn-row{display:flex;gap:4px;margin-top:6px}
+.sb-p .pbtn{width:28px;height:28px;border-radius:50%;border:1.5px solid rgba(255,255,255,.3);background:transparent;color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.sb-center{flex:1;display:flex;flex-direction:column;background:#0d1117}
+.sb-top{display:flex;align-items:center;justify-content:center;gap:12px;padding:6px;background:rgba(255,255,255,.05)}
+.sb-top .game-type{color:#fff;font-size:12px;font-weight:700}
+.sb-top .timer{color:#3b8bff;font-size:11px;font-weight:600}
+.sb-cam{flex:1;background:#1a1f2e;display:flex;align-items:center;justify-content:center;color:#3a4050;font-size:13px;position:relative;overflow:hidden}
+.sb-cam-line{position:absolute;width:70%;height:1px;background:rgba(255,255,255,.08);top:50%;transform:rotate(-5deg)}
+.sb-toolbar{display:flex;gap:0;background:rgba(255,255,255,.05)}
+.sb-toolbar .tb-item{flex:1;text-align:center;padding:6px;color:rgba(255,255,255,.4);font-size:9px;font-weight:600}
+.sb-toolbar .tb-item.active{color:#3b8bff}
+
+/* Popup overlay */
+.popup-overlay{position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.65);display:flex;align-items:center;justify-content:center;z-index:10}
+.popup-box{border-radius:14px;padding:24px 28px;min-width:320px;max-width:400px;text-align:center;box-shadow:0 12px 40px rgba(0,0,0,.5)}
+.popup-box.yellow{background:#2c2815;border:2px solid #c8a20c}
+.popup-box.red{background:#2c1515;border:2px solid #e53e3e}
+.popup-box.blue-pop{background:#152030;border:2px solid #3b8bff}
+.popup-icon{font-size:32px;margin-bottom:8px}
+.popup-title{font-size:15px;font-weight:800;color:#fff;margin-bottom:6px}
+.popup-desc{font-size:11.5px;color:rgba(255,255,255,.7);line-height:1.6;margin-bottom:14px}
+.popup-btn{display:inline-block;padding:9px 28px;border-radius:8px;font-family:'DM Sans';font-size:12px;font-weight:700;cursor:pointer;border:none;transition:.15s}
+.popup-btn:hover{filter:brightness(1.15);transform:translateY(-1px)}
+.popup-btn.y-btn{background:#c8a20c;color:#1a1500}
+.popup-btn.r-btn{background:#e53e3e;color:#fff}
+.popup-btn.b-btn{background:#3b8bff;color:#fff}
+
+@media(max-width:1100px){.sim-wrap{flex-direction:column;align-items:center}.dev-frame{position:relative!important;top:0!important;width:100%;max-width:780px}.smap,.sdesc{position:relative!important;top:0!important}.sim-side{width:100%}}
+@media(max-width:768px){.main{padding:18px 14px 60px}.hdr{padding:14px}.tabs{padding:0 14px}.branch,.ac-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<header class="hdr"><div class="hdr-in">
+  <div class="logo"><div class="logo-i">⚠️</div><div><h1>Arena Scoreboard — Pop-up Lỗi</h1><small>Feature Specification Document</small></div></div>
+  <div class="tags"><span class="tg v">v1.0</span><span class="tg">ANDROID TABLET</span><span class="tg">QA & DEV</span></div>
+</div></header>
+
+<div class="tabs"><div class="tabs-in">
+  <button class="tb on" onclick="go('us')"><span class="num">1</span>📝 User Story</button>
+  <button class="tb" onclick="go('fl')"><span class="num">2</span>🔀 Flow Diagram</button>
+  <button class="tb" onclick="go('si')"><span class="num">3</span>📱 Simulation</button>
+  <button class="tb" onclick="go('tc')"><span class="num">4</span>🧪 Test Cases</button>
+</div></div>
+
+<div class="main">
+
+<!-- ═══ TAB 1: USER STORY ═══ -->
+<div id="p-us" class="pan on">
+
+  <div class="us-hero">
+    <div class="us-label">User Story</div>
+    <div class="us-title">Hiển thị thông báo lỗi dạng Pop-up trong App Arena Bảng điểm</div>
+    <div class="us-as">
+      <em>Với vai trò là</em> nhân viên vận hành / chủ club sử dụng app Arena bảng điểm,<br>
+      <em>Tôi muốn</em> khi app gặp lỗi (mất mạng, bluetooth ngắt, camera lỗi, ...) sẽ hiển thị một popup thông báo rõ ràng thay vì chỉ hiện toast nhỏ ở góc màn hình,<br>
+      <em>Để</em> tôi biết chính xác lỗi gì đang xảy ra và có thể xử lý ngay mà không bỏ lỡ thông báo.
+    </div>
+    <div class="info-grid">
+      <div class="info-item"><div class="il">Ứng dụng</div><div class="iv">Arena Scoreboard</div></div>
+      <div class="info-item"><div class="il">Nền tảng</div><div class="iv">Android Tablet (ngang)</div></div>
+      <div class="info-item"><div class="il">Số loại lỗi</div><div class="iv">6 loại popup</div></div>
+      <div class="info-item"><div class="il">Ưu tiên</div><div class="iv">Cao — UX quan trọng</div></div>
+    </div>
+  </div>
+
+  <div class="sec">Actors</div>
+  <div class="act-grid">
+    <div class="act"><div class="act-i u">👤</div><div><h3>Nhân viên / Chủ club</h3><p>Người thao tác trên bảng điểm</p></div></div>
+    <div class="act"><div class="act-i s">⚙️</div><div><h3>App Arena (System)</h3><p>Phát hiện lỗi, hiển thị popup</p></div></div>
+    <div class="act"><div class="act-i h">📡</div><div><h3>Hardware</h3><p>Bluetooth, Camera, Network</p></div></div>
+    <div class="act"><div class="act-i c">🔌</div><div><h3>API / Server</h3><p>Backend, Livestream service</p></div></div>
+  </div>
+
+  <div class="sec">Acceptance Criteria</div>
+  <div class="ac-grid">
+
+    <div class="ac-card">
+      <h4><span class="ac-num">1</span>Popup Bluetooth & API</h4>
+      <div class="ac-line"><span class="ac-kw kw-g">GIVEN</span>App đang hoạt động bình thường</div>
+      <div class="ac-line"><span class="ac-kw kw-w">WHEN</span>Bluetooth ngắt kết nối hoặc API request thất bại</div>
+      <div class="ac-line"><span class="ac-kw kw-t">THEN</span>Hiện popup màu vàng với nút "Thử lại"</div>
+    </div>
+
+    <div class="ac-card">
+      <h4><span class="ac-num">2</span>Popup Mất mạng</h4>
+      <div class="ac-line"><span class="ac-kw kw-g">GIVEN</span>Thiết bị mất kết nối Internet</div>
+      <div class="ac-line"><span class="ac-kw kw-w">WHEN</span>Hệ thống phát hiện mất mạng</div>
+      <div class="ac-line"><span class="ac-kw kw-t">THEN</span>Hiện popup đỏ, cảnh báo khóa sau 3 ngày, nút "Kết nối lại"</div>
+    </div>
+
+    <div class="ac-card">
+      <h4><span class="ac-num">3</span>Popup Livestream & Camera</h4>
+      <div class="ac-line"><span class="ac-kw kw-g">GIVEN</span>Tính năng livestream hoặc camera đang hoạt động</div>
+      <div class="ac-line"><span class="ac-kw kw-w">WHEN</span>Livestream thất bại hoặc camera mất kết nối</div>
+      <div class="ac-line"><span class="ac-kw kw-t">THEN</span>Hiện popup đỏ, hướng dẫn kiểm tra, nút "OK"</div>
+    </div>
+
+    <div class="ac-card">
+      <h4><span class="ac-num">4</span>Popup Chưa cài đặt</h4>
+      <div class="ac-line"><span class="ac-kw kw-g">GIVEN</span>User truy cập tính năng chưa được cấu hình</div>
+      <div class="ac-line"><span class="ac-kw kw-w">WHEN</span>Tính năng yêu cầu cài đặt trước</div>
+      <div class="ac-line"><span class="ac-kw kw-t">THEN</span>Hiện popup xanh, hướng dẫn vào Settings để cấu hình</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══ TAB 2: FLOW DIAGRAM ═══ -->
+<div id="p-fl" class="pan">
+  <div class="sec">Luồng xử lý Pop-up lỗi</div>
+  <div class="flow">
+
+    <!-- Step 1 -->
+    <div class="fn">
+      <div class="fn-h"><span class="badge usr">USER</span><span class="fn-t">1. Đang sử dụng Bảng điểm</span></div>
+      <div class="fn-b">Nhân viên đang thao tác trên app Arena — chấm điểm, xem camera, livestream, v.v.</div>
+    </div>
+
+    <div class="conn"><span class="conn-lbl no">Lỗi xảy ra</span></div>
+
+    <!-- Step 2 -->
+    <div class="fn">
+      <div class="fn-h"><span class="badge sys">SYSTEM</span><span class="fn-t">2. Phát hiện lỗi</span></div>
+      <div class="fn-b">App tự động detect lỗi: <strong>Bluetooth ngắt</strong>, <strong>Mất mạng</strong>, <strong>API fail</strong>, <strong>Livestream fail</strong>, <strong>Camera mất</strong>, hoặc <strong>Chưa cài đặt</strong>.</div>
+    </div>
+
+    <div class="conn"></div>
+
+    <!-- Decision -->
+    <div class="diamond-wrap">
+      <div class="diamond">⬥ Phân loại lỗi?</div>
+    </div>
+
+    <div class="conn"></div>
+
+    <!-- Step 3 -->
+    <div class="fn">
+      <div class="fn-h"><span class="badge sys">SYSTEM</span><span class="fn-t">3. Hiển thị Popup tương ứng</span></div>
+      <div class="fn-b">
+        Popup hiện đè lên giao diện bảng điểm với overlay mờ phía sau.<br>
+        • <strong>Vàng:</strong> Bluetooth ngắt, API lỗi → nút <code>Thử lại</code><br>
+        • <strong>Đỏ:</strong> Mất mạng (cảnh báo khóa 3 ngày), Livestream fail, Camera mất → nút <code>Kết nối lại</code> / <code>OK</code><br>
+        • <strong>Xanh:</strong> Chưa cài đặt → nút <code>Đi Settings</code>
+      </div>
+    </div>
+
+    <div class="conn"></div>
+
+    <!-- Step 4 -->
+    <div class="fn">
+      <div class="fn-h"><span class="badge usr">USER</span><span class="fn-t">4. Bấm nút hành động trên Popup</span></div>
+      <div class="fn-b">User đọc thông báo lỗi, bấm nút tương ứng: <strong>Thử lại</strong>, <strong>Kết nối lại</strong>, <strong>OK</strong>, hoặc <strong>Đi Settings</strong>.</div>
+    </div>
+
+    <div class="conn"></div>
+
+    <!-- Decision 2 -->
+    <div class="diamond-wrap">
+      <div class="diamond">⬥ Kết quả xử lý?</div>
+    </div>
+
+    <div class="conn"></div>
+
+    <!-- Branch -->
+    <div class="branch">
+      <div class="fn win">
+        <div class="fn-h"><span class="badge ok">✓ OK</span><span class="fn-t">5a. Xử lý thành công</span></div>
+        <div class="fn-b">Kết nối lại OK, đóng popup, quay về bảng điểm bình thường.</div>
+      </div>
+      <div class="fn lose">
+        <div class="fn-h"><span class="badge no">✗ FAIL</span><span class="fn-t">5b. Vẫn lỗi</span></div>
+        <div class="fn-b">Kết nối thất bại — popup vẫn hiện hoặc hiện lại để user thử lần nữa.</div>
+      </div>
+    </div>
+
+    <div class="fs-callout">⚠️ Nếu mất mạng quá 3 ngày, hệ thống sẽ tự khóa thiết bị.</div>
+
+  </div>
+</div>
+
+<!-- ═══ TAB 3: SIMULATION ═══ -->
+<div id="p-si" class="pan">
+  <div class="sec">Mô phỏng tương tác</div>
+  <div class="sim-hint">💡 Click vào các nút trên popup để chuyển màn hình. Bắt đầu từ màn hình bảng điểm bình thường.</div>
+
+  <div class="sim-wrap" style="margin-top:16px">
+    <div class="dev-frame">
+      <div class="dev-shell">
+        <div class="dev-notch"></div>
+        <div class="dev-scr">
+
+          <!-- S1: Scoreboard bình thường -->
+          <div class="scr on" id="s1">
+            <div class="sb-bg">
+              <div class="sb-p p1">
+                <div class="pname">Player 1</div>
+                <div class="pscore">0</div>
+                <div class="pbtn-row"><div class="pbtn">+2</div><div class="pbtn">+3</div><div class="pbtn">+4</div></div>
+              </div>
+              <div class="sb-center">
+                <div class="sb-top">
+                  <span class="game-type">POOL</span>
+                  <span class="timer">00:00:06</span>
+                </div>
+                <div style="display:flex;gap:0;background:rgba(255,255,255,.05)">
+                  <div style="flex:1;text-align:center;padding:6px;color:#fff;font-size:10px;font-weight:600;background:rgba(59,139,255,.15);border-bottom:2px solid #3b8bff">TẠM DỪNG</div>
+                  <div style="flex:1;text-align:center;padding:6px;color:#fff;font-size:10px;font-weight:600;background:rgba(229,62,62,.15);border-bottom:2px solid #e53e3e">KẾT THÚC</div>
+                </div>
+                <div class="sb-toolbar">
+                  <div class="tb-item active">▶ Video</div>
+                  <div class="tb-item">⦿ Ghi</div>
+                  <div class="tb-item">⟳ Độ trễ</div>
+                  <div class="tb-item">◉ Xem lại</div>
+                  <div class="tb-item">⛶ Full</div>
+                  <div class="tb-item">☰ Menu</div>
+                </div>
+                <div class="sb-cam">
+                  <div class="sb-cam-line"></div>
+                  <span style="opacity:.3">📷 Camera Feed</span>
+                </div>
+              </div>
+              <div class="sb-p p2">
+                <div class="pname">Player 2</div>
+                <div class="pscore">0</div>
+                <div class="pbtn-row"><div class="pbtn">+2</div><div class="pbtn">+3</div><div class="pbtn">+4</div></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- S2: Bluetooth ngắt (vàng) -->
+          <div class="scr" id="s2">
+            <div class="sb-bg">
+              <div class="sb-p p1"><div class="pname">Player 1</div><div class="pscore">0</div></div>
+              <div class="sb-center">
+                <div class="sb-top"><span class="game-type">POOL</span><span class="timer">00:05:32</span></div>
+                <div class="sb-cam"><div class="sb-cam-line"></div></div>
+              </div>
+              <div class="sb-p p2"><div class="pname">Player 2</div><div class="pscore">0</div></div>
+              <div class="popup-overlay">
+                <div class="popup-box yellow">
+                  <div class="popup-icon">📶</div>
+                  <div class="popup-title">Bluetooth ngắt kết nối</div>
+                  <div class="popup-desc">Kết nối Bluetooth với thiết bị đã bị gián đoạn. Vui lòng kiểm tra thiết bị và thử kết nối lại.</div>
+                  <button class="popup-btn y-btn" onclick="gs(1)">Thử lại</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- S3: Mất mạng (đỏ) -->
+          <div class="scr" id="s3">
+            <div class="sb-bg">
+              <div class="sb-p p1"><div class="pname">Player 1</div><div class="pscore">3</div></div>
+              <div class="sb-center">
+                <div class="sb-top"><span class="game-type">POOL</span><span class="timer">00:12:45</span></div>
+                <div class="sb-cam"><div class="sb-cam-line"></div></div>
+              </div>
+              <div class="sb-p p2"><div class="pname">Player 2</div><div class="pscore">2</div></div>
+              <div class="popup-overlay">
+                <div class="popup-box red">
+                  <div class="popup-icon">🌐</div>
+                  <div class="popup-title">Mất kết nối mạng</div>
+                  <div class="popup-desc">Thiết bị hiện không có kết nối Internet.<br><strong style="color:#fca5a5">⚠️ Nếu mất mạng quá 3 ngày, hệ thống sẽ tự khóa thiết bị.</strong></div>
+                  <button class="popup-btn r-btn" onclick="gs(1)">Kết nối lại</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- S4: Lỗi API (vàng) -->
+          <div class="scr" id="s4">
+            <div class="sb-bg">
+              <div class="sb-p p1"><div class="pname">Player 1</div><div class="pscore">5</div></div>
+              <div class="sb-center">
+                <div class="sb-top"><span class="game-type">POOL</span><span class="timer">00:20:10</span></div>
+                <div class="sb-cam"><div class="sb-cam-line"></div></div>
+              </div>
+              <div class="sb-p p2"><div class="pname">Player 2</div><div class="pscore">4</div></div>
+              <div class="popup-overlay">
+                <div class="popup-box yellow">
+                  <div class="popup-icon">🔗</div>
+                  <div class="popup-title">Lỗi kết nối API</div>
+                  <div class="popup-desc">Không thể gửi dữ liệu đến server. Vui lòng kiểm tra kết nối mạng và thử lại.</div>
+                  <button class="popup-btn y-btn" onclick="gs(1)">Thử lại</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- S5: Livestream thất bại (đỏ) -->
+          <div class="scr" id="s5">
+            <div class="sb-bg">
+              <div class="sb-p p1"><div class="pname">Player 1</div><div class="pscore">2</div></div>
+              <div class="sb-center">
+                <div class="sb-top"><span class="game-type">POOL</span><span class="timer">00:08:22</span></div>
+                <div class="sb-cam"><div class="sb-cam-line"></div></div>
+              </div>
+              <div class="sb-p p2"><div class="pname">Player 2</div><div class="pscore">1</div></div>
+              <div class="popup-overlay">
+                <div class="popup-box red">
+                  <div class="popup-icon">📺</div>
+                  <div class="popup-title">Livestream thất bại</div>
+                  <div class="popup-desc">Không thể phát livestream. Vui lòng kiểm tra kết nối mạng và cấu hình livestream trong Settings.</div>
+                  <button class="popup-btn r-btn" onclick="gs(1)">OK</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- S6: Camera lỗi (đỏ) -->
+          <div class="scr" id="s6">
+            <div class="sb-bg">
+              <div class="sb-p p1"><div class="pname">Player 1</div><div class="pscore">0</div></div>
+              <div class="sb-center">
+                <div class="sb-top"><span class="game-type">POOL</span><span class="timer">00:00:15</span></div>
+                <div class="sb-cam"><div class="sb-cam-line"></div><span style="opacity:.3;color:#e53e3e">⚠ Không có tín hiệu</span></div>
+              </div>
+              <div class="sb-p p2"><div class="pname">Player 2</div><div class="pscore">0</div></div>
+              <div class="popup-overlay">
+                <div class="popup-box red">
+                  <div class="popup-icon">📷</div>
+                  <div class="popup-title">Kết nối Camera thất bại</div>
+                  <div class="popup-desc">Không nhận được tín hiệu từ camera.<br>Vui lòng kiểm tra:<br>• Nguồn điện camera<br>• Dây kết nối<br>• Cấu hình IP camera trong Settings</div>
+                  <button class="popup-btn r-btn" onclick="gs(1)">OK</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- S7: Chưa cài đặt (xanh) -->
+          <div class="scr" id="s7">
+            <div class="sb-bg">
+              <div class="sb-p p1"><div class="pname">Player 1</div><div class="pscore">0</div></div>
+              <div class="sb-center">
+                <div class="sb-top"><span class="game-type">POOL</span><span class="timer">00:00:00</span></div>
+                <div class="sb-cam"><div class="sb-cam-line"></div></div>
+              </div>
+              <div class="sb-p p2"><div class="pname">Player 2</div><div class="pscore">0</div></div>
+              <div class="popup-overlay">
+                <div class="popup-box blue-pop">
+                  <div class="popup-icon">⚙️</div>
+                  <div class="popup-title">Tính năng chưa được cài đặt</div>
+                  <div class="popup-desc">Tính năng này yêu cầu cấu hình trước khi sử dụng. Vui lòng vào <strong style="color:#93c5fd">Settings</strong> để hoàn tất cài đặt.</div>
+                  <button class="popup-btn b-btn" onclick="gs(8)">Đi Settings</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- S8: Settings screen (placeholder) -->
+          <div class="scr" id="s8">
+            <div style="width:100%;height:100%;background:#0d1117;display:flex;flex-direction:column;padding:20px;color:#fff">
+              <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px">
+                <button onclick="gs(1)" style="background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:8px;color:#fff;padding:6px 14px;font-size:11px;font-weight:600;cursor:pointer;font-family:'DM Sans'">← Quay lại</button>
+                <span style="font-size:16px;font-weight:800">⚙️ Settings</span>
+              </div>
+              <div style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:16px;margin-bottom:10px">
+                <div style="font-size:12px;font-weight:700;margin-bottom:8px;color:#3b8bff">Cấu hình Camera</div>
+                <div style="font-size:11px;color:rgba(255,255,255,.5);line-height:1.6">IP Camera: <span style="color:rgba(255,255,255,.2)">Chưa cài đặt</span></div>
+              </div>
+              <div style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:16px;margin-bottom:10px">
+                <div style="font-size:12px;font-weight:700;margin-bottom:8px;color:#3b8bff">Cấu hình Livestream</div>
+                <div style="font-size:11px;color:rgba(255,255,255,.5);line-height:1.6">RTMP URL: <span style="color:rgba(255,255,255,.2)">Chưa cài đặt</span></div>
+              </div>
+              <div style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:16px">
+                <div style="font-size:12px;font-weight:700;margin-bottom:8px;color:#3b8bff">Kết nối Bluetooth</div>
+                <div style="font-size:11px;color:rgba(255,255,255,.5);line-height:1.6">Trạng thái: <span style="color:#fca5a5">Chưa kết nối</span></div>
+              </div>
+            </div>
+          </div>
+
+        </div><!-- /dev-scr -->
+      </div><!-- /dev-shell -->
+    </div><!-- /dev-frame -->
+
+    <div class="sim-side">
+      <div class="smap">
+        <h3>Bản đồ màn hình</h3>
+        <div class="ms on" id="m1" onclick="gs(1)"><span class="mn2">1</span>Bảng điểm (bình thường)</div>
+        <div class="mcv"></div>
+        <div class="ms" id="m2" onclick="gs(2)"><span class="mn2">2</span>🟡 Bluetooth ngắt</div>
+        <div class="mcv"></div>
+        <div class="ms" id="m3" onclick="gs(3)"><span class="mn2">3</span>🔴 Mất mạng</div>
+        <div class="mcv"></div>
+        <div class="ms" id="m4" onclick="gs(4)"><span class="mn2">4</span>🟡 Lỗi API</div>
+        <div class="mcv"></div>
+        <div class="ms" id="m5" onclick="gs(5)"><span class="mn2">5</span>🔴 Livestream thất bại</div>
+        <div class="mcv"></div>
+        <div class="ms" id="m6" onclick="gs(6)"><span class="mn2">6</span>🔴 Camera lỗi</div>
+        <div class="mcv"></div>
+        <div class="ms" id="m7" onclick="gs(7)"><span class="mn2">7</span>🔵 Chưa cài đặt</div>
+        <div class="mcv"></div>
+        <div class="ms" id="m8" onclick="gs(8)"><span class="mn2">8</span>⚙️ Settings</div>
+      </div>
+
+      <div class="sdesc">
+        <h3>Mô tả màn hình</h3>
+        <div id="desc-c"><strong>S1 — Bảng điểm:</strong> Giao diện chính của app Arena. Hiển thị điểm 2 player, camera feed, và toolbar. Khi xảy ra lỗi, popup sẽ hiện đè lên màn hình này.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ TAB 4: TEST CASES ═══ -->
+<div id="p-tc" class="pan">
+  <div class="sec">Test Cases</div>
+
+  <div class="tc-stats">
+    <div class="tc-stat g"><div class="n">5</div><div class="l">Happy Path</div></div>
+    <div class="tc-stat r"><div class="n">5</div><div class="l">Negative</div></div>
+    <div class="tc-stat b"><div class="n">3</div><div class="l">Hardware</div></div>
+    <div class="tc-stat o"><div class="n">2</div><div class="l">Performance</div></div>
+  </div>
+
+  <div class="tc-filters">
+    <button class="tc-fbtn on" onclick="flt('all',this)">Tất cả (15)</button>
+    <button class="tc-fbtn" onclick="flt('happy',this)">✅ Happy (5)</button>
+    <button class="tc-fbtn" onclick="flt('neg',this)">❌ Negative (5)</button>
+    <button class="tc-fbtn" onclick="flt('hw',this)">🔧 Hardware (3)</button>
+    <button class="tc-fbtn" onclick="flt('perf',this)">⚡ Performance (2)</button>
+  </div>
+
+  <table class="tc-table" id="tc-tbl">
+    <thead><tr>
+      <th>ID</th><th>Loại</th><th>Ưu tiên</th><th>Tiêu đề</th><th>Bước thực hiện</th><th>Kết quả mong đợi</th>
+    </tr></thead>
+    <tbody>
+
+      <tr data-cat="happy">
+        <td class="tc-id">TC-01</td>
+        <td><span class="tc-tag happy">HAPPY</span></td>
+        <td><span class="tc-pri p1">P1</span></td>
+        <td>Popup Bluetooth ngắt hiện đúng</td>
+        <td>1. Mở app Arena, bắt đầu game<br>2. Tắt Bluetooth trên thiết bị</td>
+        <td>Popup màu vàng hiện với nội dung "Bluetooth ngắt kết nối" và nút "Thử lại"</td>
+      </tr>
+
+      <tr data-cat="happy">
+        <td class="tc-id">TC-02</td>
+        <td><span class="tc-tag happy">HAPPY</span></td>
+        <td><span class="tc-pri p1">P1</span></td>
+        <td>Popup mất mạng hiện đúng</td>
+        <td>1. Mở app Arena<br>2. Tắt WiFi và mobile data</td>
+        <td>Popup đỏ hiện, cảnh báo khóa thiết bị sau 3 ngày, nút "Kết nối lại"</td>
+      </tr>
+
+      <tr data-cat="happy">
+        <td class="tc-id">TC-03</td>
+        <td><span class="tc-tag happy">HAPPY</span></td>
+        <td><span class="tc-pri p1">P1</span></td>
+        <td>Popup API lỗi hiện đúng</td>
+        <td>1. App đang hoạt động<br>2. API server trả về lỗi (500/timeout)</td>
+        <td>Popup vàng hiện với nút "Thử lại", bấm "Thử lại" → gọi lại request</td>
+      </tr>
+
+      <tr data-cat="happy">
+        <td class="tc-id">TC-04</td>
+        <td><span class="tc-tag happy">HAPPY</span></td>
+        <td><span class="tc-pri p2">P2</span></td>
+        <td>Popup chưa cài đặt hiện đúng</td>
+        <td>1. Truy cập tính năng chưa cấu hình<br>2. (VD: bật livestream khi chưa set RTMP)</td>
+        <td>Popup xanh hiện, hướng dẫn vào Settings</td>
+      </tr>
+
+      <tr data-cat="happy">
+        <td class="tc-id">TC-05</td>
+        <td><span class="tc-tag happy">HAPPY</span></td>
+        <td><span class="tc-pri p1">P1</span></td>
+        <td>Đóng popup sau khi xử lý lỗi</td>
+        <td>1. Trigger lỗi → popup hiện<br>2. Khắc phục lỗi (bật lại WiFi, Bluetooth...)<br>3. Bấm nút hành động trên popup</td>
+        <td>Popup đóng, quay về bảng điểm bình thường</td>
+      </tr>
+
+      <tr data-cat="neg">
+        <td class="tc-id">TC-06</td>
+        <td><span class="tc-tag neg">NEGATIVE</span></td>
+        <td><span class="tc-pri p1">P1</span></td>
+        <td>Lỗi xảy ra nhưng không hiện popup</td>
+        <td>1. Trigger từng loại lỗi<br>2. Quan sát UI</td>
+        <td>KHÔNG ĐƯỢC XẢY RA — tất cả lỗi phải hiện popup tương ứng</td>
+      </tr>
+
+      <tr data-cat="neg">
+        <td class="tc-id">TC-07</td>
+        <td><span class="tc-tag neg">NEGATIVE</span></td>
+        <td><span class="tc-pri p2">P2</span></td>
+        <td>Popup hiện sai màu sắc</td>
+        <td>1. Trigger lỗi Bluetooth → kiểm tra popup vàng<br>2. Trigger mất mạng → kiểm tra popup đỏ<br>3. Trigger chưa cài đặt → kiểm tra popup xanh</td>
+        <td>Mỗi loại lỗi hiện đúng màu popup đã quy định</td>
+      </tr>
+
+      <tr data-cat="neg">
+        <td class="tc-id">TC-08</td>
+        <td><span class="tc-tag neg">NEGATIVE</span></td>
+        <td><span class="tc-pri p2">P2</span></td>
+        <td>Nút "Thử lại" không hoạt động</td>
+        <td>1. Trigger lỗi API → popup vàng hiện<br>2. Bấm "Thử lại"</td>
+        <td>Request phải được gọi lại. Nếu thành công → đóng popup. Nếu thất bại → popup hiện lại.</td>
+      </tr>
+
+      <tr data-cat="neg">
+        <td class="tc-id">TC-09</td>
+        <td><span class="tc-tag neg">NEGATIVE</span></td>
+        <td><span class="tc-pri p1">P1</span></td>
+        <td>Nhiều lỗi xảy ra cùng lúc</td>
+        <td>1. Tắt WiFi + tắt Bluetooth cùng lúc<br>2. Quan sát popup</td>
+        <td>Hiện popup lỗi ưu tiên cao nhất trước (mất mạng), sau khi xử lý xong → hiện popup tiếp theo nếu còn</td>
+      </tr>
+
+      <tr data-cat="neg">
+        <td class="tc-id">TC-10</td>
+        <td><span class="tc-tag neg">NEGATIVE</span></td>
+        <td><span class="tc-pri p2">P2</span></td>
+        <td>Popup mất mạng — đếm ngược 3 ngày</td>
+        <td>1. Tắt mạng liên tục 3 ngày<br>2. Kiểm tra trạng thái thiết bị</td>
+        <td>Sau 3 ngày mất mạng liên tục, thiết bị tự khóa đúng như cảnh báo</td>
+      </tr>
+
+      <tr data-cat="hw">
+        <td class="tc-id">TC-11</td>
+        <td><span class="tc-tag hw">HARDWARE</span></td>
+        <td><span class="tc-pri p1">P1</span></td>
+        <td>Camera mất kết nối giữa game</td>
+        <td>1. Đang chơi game, camera đang stream<br>2. Rút dây nguồn camera</td>
+        <td>Popup đỏ hiện với hướng dẫn kiểm tra nguồn, dây kết nối, IP camera</td>
+      </tr>
+
+      <tr data-cat="hw">
+        <td class="tc-id">TC-12</td>
+        <td><span class="tc-tag hw">HARDWARE</span></td>
+        <td><span class="tc-pri p2">P2</span></td>
+        <td>Bluetooth bật lại → tự kết nối</td>
+        <td>1. Bluetooth ngắt → popup vàng hiện<br>2. Bật Bluetooth lại<br>3. Bấm "Thử lại"</td>
+        <td>Popup đóng, kết nối Bluetooth khôi phục thành công</td>
+      </tr>
+
+      <tr data-cat="hw">
+        <td class="tc-id">TC-13</td>
+        <td><span class="tc-tag hw">HARDWARE</span></td>
+        <td><span class="tc-pri p2">P2</span></td>
+        <td>Livestream fail khi mạng yếu</td>
+        <td>1. Kết nối WiFi tốc độ rất thấp<br>2. Bắt đầu livestream</td>
+        <td>Popup đỏ "Livestream thất bại" hiện, nút OK để đóng</td>
+      </tr>
+
+      <tr data-cat="perf">
+        <td class="tc-id">TC-14</td>
+        <td><span class="tc-tag perf">PERFORMANCE</span></td>
+        <td><span class="tc-pri p2">P2</span></td>
+        <td>Popup hiện nhanh sau khi lỗi xảy ra</td>
+        <td>1. Trigger lỗi (tắt WiFi, rút camera...)<br>2. Đo thời gian popup hiện</td>
+        <td>Popup phải hiện trong vòng 2-3 giây sau khi lỗi được phát hiện</td>
+      </tr>
+
+      <tr data-cat="perf">
+        <td class="tc-id">TC-15</td>
+        <td><span class="tc-tag perf">PERFORMANCE</span></td>
+        <td><span class="tc-pri p3">P3</span></td>
+        <td>Popup không ảnh hưởng đến game đang chơi</td>
+        <td>1. Đang chơi game (có điểm)<br>2. Trigger lỗi API → popup hiện<br>3. Bấm "Thử lại" → popup đóng</td>
+        <td>Điểm số, timer, trạng thái game không bị thay đổi sau khi popup đóng</td>
+      </tr>
+
+    </tbody>
+  </table>
+</div>
+
+<div class="ft">Arena Scoreboard — Pop-up Lỗi Spec v1.0 · QA & Dev</div>
+</div>
+
+<script>
+function go(id){
+  document.querySelectorAll('.pan').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.tb').forEach(t=>t.classList.remove('on'));
+  document.getElementById('p-'+id).classList.add('on');
+  const m={us:'User Story',fl:'Flow',si:'Simulation',tc:'Test'};
+  document.querySelectorAll('.tb').forEach(t=>{if(t.textContent.includes(m[id]))t.classList.add('on')});
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+let cur=1;const vis=new Set([1]);
+const descs={
+  1:'<strong>S1 — Bảng điểm:</strong> Giao diện chính của app Arena. Hiển thị điểm 2 player, camera feed, toolbar điều khiển. Khi lỗi xảy ra, popup sẽ đè lên màn hình này với overlay mờ phía sau.',
+  2:'<strong>S2 — Bluetooth ngắt:</strong> Popup màu vàng cảnh báo mất kết nối Bluetooth. Nút "Thử lại" để kết nối lại thiết bị Bluetooth.',
+  3:'<strong>S3 — Mất mạng:</strong> Popup đỏ — lỗi nghiêm trọng. Cảnh báo nếu mất mạng quá 3 ngày hệ thống sẽ tự khóa thiết bị. Nút "Kết nối lại".',
+  4:'<strong>S4 — Lỗi API:</strong> Popup vàng khi request đến server thất bại. Nút "Thử lại" để gọi lại API request.',
+  5:'<strong>S5 — Livestream thất bại:</strong> Popup đỏ khi không thể phát livestream. Nút "OK" để đóng và kiểm tra lại cấu hình.',
+  6:'<strong>S6 — Camera lỗi:</strong> Popup đỏ với hướng dẫn chi tiết: kiểm tra nguồn điện, dây kết nối, cấu hình IP camera.',
+  7:'<strong>S7 — Chưa cài đặt:</strong> Popup xanh thông tin. Hướng dẫn user vào Settings để cấu hình tính năng trước khi sử dụng.',
+  8:'<strong>S8 — Settings:</strong> Màn hình cài đặt để user cấu hình Camera, Livestream, Bluetooth. User được điều hướng tới đây từ popup "Chưa cài đặt".'
+};
+
+function gs(n){
+  cur=n;vis.add(n);
+  document.querySelectorAll('.scr').forEach(s=>s.classList.remove('on'));
+  document.getElementById('s'+n).classList.add('on');
+  document.querySelectorAll('.smap .ms').forEach(s=>s.classList.remove('on'));
+  const me=document.getElementById('m'+n);if(me)me.classList.add('on');
+  vis.forEach(v=>{const e=document.getElementById('m'+v);if(e)e.classList.add('vis')});
+  const dc=document.getElementById('desc-c');
+  if(dc)dc.innerHTML=descs[n]||'';
+}
+
+function flt(cat,btn){
+  document.querySelectorAll('.tc-fbtn').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  document.querySelectorAll('#tc-tbl tbody tr').forEach(r=>{
+    r.style.display=(cat==='all'||r.dataset.cat===cat)?'':'none';
+  });
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tracking Active — Arena Scoreboard</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f4f2ee;--surface:#fff;--surface2:#faf9f6;--border:#e2dfda;--border2:#d0cdc6;
+  --text:#18150f;--text2:#3b362d;--muted:#8a8278;
+  --green:#1a7a4a;--green-bg:#e6f5ed;--green-b:rgba(26,122,74,.2);
+  --blue:#2260a8;--blue-bg:#e7f0fa;--blue-b:rgba(34,96,168,.2);
+  --orange:#a85b0d;--orange-bg:#fef4e5;--orange-b:rgba(168,91,13,.15);
+  --red:#b53535;--red-bg:#fce8e8;--red-b:rgba(181,53,53,.18);
+  --purple:#6846a8;--purple-bg:#f0eaf8;--purple-b:rgba(104,70,168,.15);
+  --cyan:#0c7085;--cyan-bg:#e4f5f9;
+  --r:10px;--sh:0 1px 4px rgba(24,21,15,.06);--sh2:0 4px 20px rgba(24,21,15,.08);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;line-height:1.6}
+
+.hdr{background:var(--surface);border-bottom:1px solid var(--border);padding:16px 32px;position:sticky;top:0;z-index:200;box-shadow:var(--sh)}
+.hdr-in{max-width:1320px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.logo{display:flex;align-items:center;gap:10px}
+.logo-i{width:34px;height:34px;background:linear-gradient(135deg,#1a2d52,#2a4a7a);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;color:#fff;box-shadow:0 2px 8px rgba(26,45,82,.3)}
+.logo h1{font-size:16px;font-weight:800;letter-spacing:-.3px}
+.logo small{font-size:10px;color:var(--muted);font-weight:500}
+.tags{display:flex;gap:7px;flex-wrap:wrap}
+.tg{font-family:'IBM Plex Mono',monospace;font-size:9px;padding:3px 9px;border-radius:5px;background:var(--surface2);border:1px solid var(--border);color:var(--muted);font-weight:600;letter-spacing:.5px;text-transform:uppercase}
+.tg.v{color:var(--green);border-color:var(--green-b);background:var(--green-bg)}
+
+.tabs{background:var(--surface);border-bottom:1px solid var(--border);padding:0 32px;overflow-x:auto}
+.tabs-in{max-width:1320px;margin:0 auto;display:flex;gap:0}
+.tb{font-family:'DM Sans',sans-serif;font-size:12.5px;font-weight:600;padding:12px 20px;border:none;background:none;color:var(--muted);cursor:pointer;border-bottom:2.5px solid transparent;transition:.2s;white-space:nowrap;display:flex;align-items:center;gap:6px}
+.tb:hover{color:var(--text2)}
+.tb.on{color:var(--green);border-bottom-color:var(--green)}
+.tb .num{font-family:'IBM Plex Mono',monospace;font-size:9px;font-weight:700;background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:1px 5px}
+.tb.on .num{background:var(--green-bg);border-color:var(--green-b);color:var(--green)}
+
+.main{max-width:1320px;margin:0 auto;padding:28px 32px 80px}
+.pan{display:none}.pan.on{display:block}
+.sec{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin:28px 0 14px;display:flex;align-items:center;gap:10px}
+.sec::after{content:'';flex:1;height:1px;background:var(--border)}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:20px 24px;box-shadow:var(--sh);margin-bottom:12px}
+
+/* USER STORY */
+.us-hero{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:26px 30px;box-shadow:var(--sh);margin-bottom:20px;position:relative;overflow:hidden}
+.us-hero::before{content:'';position:absolute;top:0;left:0;width:5px;height:100%;background:var(--green)}
+.us-label{font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:700;color:var(--green);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px}
+.us-title{font-size:17px;font-weight:800;color:var(--text);margin-bottom:6px;line-height:1.4}
+.us-as{font-size:13.5px;color:var(--text2);line-height:1.8}
+.us-as em{font-style:italic;color:var(--green);font-weight:600}
+.info-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:8px;margin-top:14px}
+.info-item{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px 14px}
+.info-item .il{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:3px}
+.info-item .iv{font-size:12.5px;font-weight:600;color:var(--text)}
+.act-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+.act{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:13px 16px;display:flex;align-items:center;gap:11px;box-shadow:var(--sh)}
+.act-i{width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.act-i.u{background:var(--blue-bg)}.act-i.s{background:var(--green-bg)}.act-i.h{background:var(--orange-bg)}.act-i.c{background:var(--purple-bg)}
+.act h3{font-size:12px;font-weight:700}.act p{font-size:10.5px;color:var(--muted);margin-top:1px}
+.ac-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:10px}
+.ac-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px 20px;box-shadow:var(--sh)}
+.ac-card h4{font-size:12px;font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.ac-num{font-family:'IBM Plex Mono',monospace;font-size:9px;font-weight:700;width:20px;height:20px;border-radius:5px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:var(--blue-bg);color:var(--blue)}
+.ac-line{font-size:12px;color:var(--text2);line-height:1.6;padding:3px 0;border-bottom:1px solid var(--border);display:flex;gap:7px}
+.ac-line:last-child{border:none}
+.ac-kw{font-family:'IBM Plex Mono',monospace;font-size:9px;font-weight:700;padding:2px 6px;border-radius:4px;flex-shrink:0;margin-top:1px}
+.kw-g{background:var(--blue-bg);color:var(--blue)}.kw-w{background:var(--orange-bg);color:var(--orange)}.kw-t{background:var(--green-bg);color:var(--green)}.kw-a{background:var(--surface2);color:var(--muted)}
+
+/* FLOW */
+.flow{display:flex;flex-direction:column;gap:0}
+.conn{display:flex;align-items:center;justify-content:center;position:relative;min-height:28px;padding:2px 0}
+.conn::before{content:'';width:2px;height:100%;background:var(--border2);position:absolute;left:50%;transform:translateX(-50%)}
+.conn-lbl{position:relative;z-index:1;font-family:'IBM Plex Mono',monospace;font-size:9.5px;font-weight:600;padding:3px 11px;border-radius:20px;border:1px solid;white-space:nowrap}
+.conn-lbl.ok{color:var(--green);background:var(--green-bg);border-color:var(--green-b)}
+.conn-lbl.no{color:var(--red);background:var(--red-bg);border-color:var(--red-b)}
+.conn-lbl.info{color:var(--blue);background:var(--blue-bg);border-color:var(--blue-b)}
+.fn{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px 20px;box-shadow:var(--sh);transition:.15s}
+.fn:hover{box-shadow:var(--sh2)}
+.fn-h{display:flex;align-items:center;gap:8px;margin-bottom:5px}
+.badge{font-family:'IBM Plex Mono',monospace;font-size:9px;font-weight:700;padding:3px 8px;border-radius:5px;flex-shrink:0}
+.badge.usr{background:var(--blue-bg);color:var(--blue)}
+.badge.sys{background:var(--green-bg);color:var(--green)}
+.badge.hw{background:var(--orange-bg);color:var(--orange)}
+.badge.cam{background:var(--purple-bg);color:var(--purple)}
+.badge.ok{background:#d5f5e3;color:#14663a}
+.badge.no{background:var(--red-bg);color:var(--red)}
+.fn-t{font-size:13.5px;font-weight:700}
+.fn-b{font-size:12px;color:var(--muted);line-height:1.7;margin-top:3px}
+.fn-b strong{color:var(--text2);font-weight:600}
+.fn-b code{font-family:'IBM Plex Mono',monospace;font-size:9.5px;background:var(--green-bg);padding:1px 5px;border-radius:3px;color:var(--green);border:1px solid var(--green-b)}
+.branch{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.fn.win{border-color:var(--green-b)}.fn.lose{border-color:var(--red-b)}
+.diamond-wrap{display:flex;justify-content:center;padding:4px 0}
+.diamond{padding:12px 18px;background:var(--cyan-bg);border:2px solid rgba(12,112,133,.25);border-radius:8px;text-align:center;font-size:11px;font-weight:700;color:var(--cyan)}
+
+/* TEST CASES */
+.tc-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin-bottom:20px}
+.tc-stat{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px;text-align:center;box-shadow:var(--sh)}
+.tc-stat .n{font-size:24px;font-weight:800}.tc-stat .l{font-size:9px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:1px}
+.tc-stat.g .n{color:var(--green)}.tc-stat.r .n{color:var(--red)}.tc-stat.b .n{color:var(--blue)}.tc-stat.o .n{color:var(--orange)}
+.tc-filters{display:flex;gap:5px;margin-bottom:14px;flex-wrap:wrap}
+.tc-fbtn{font-family:'DM Sans';font-size:11px;font-weight:600;padding:5px 12px;border:1px solid var(--border);border-radius:18px;background:var(--surface);color:var(--muted);cursor:pointer;transition:.15s}
+.tc-fbtn:hover{border-color:var(--border2);color:var(--text2)}
+.tc-fbtn.on{background:var(--green-bg);border-color:var(--green-b);color:var(--green)}
+.tc-table{width:100%;border-collapse:separate;border-spacing:0;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;box-shadow:var(--sh)}
+.tc-table thead th{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);padding:10px 14px;text-align:left;background:var(--surface2);border-bottom:1px solid var(--border)}
+.tc-table tbody td{font-size:12px;padding:10px 14px;border-bottom:1px solid var(--border);color:var(--text2);vertical-align:top;line-height:1.5}
+.tc-table tbody tr:last-child td{border-bottom:none}
+.tc-table tbody tr:hover{background:var(--surface2)}
+.tc-id{font-family:'IBM Plex Mono',monospace;font-size:9.5px;font-weight:700;white-space:nowrap}
+.tc-tag{font-family:'IBM Plex Mono',monospace;font-size:8.5px;font-weight:700;padding:2px 7px;border-radius:4px;white-space:nowrap}
+.tc-tag.happy{background:var(--green-bg);color:var(--green)}
+.tc-tag.neg{background:var(--red-bg);color:var(--red)}
+.tc-tag.hw{background:var(--purple-bg);color:var(--purple)}
+.tc-tag.perf{background:var(--blue-bg);color:var(--blue)}
+.tc-pri{font-family:'IBM Plex Mono',monospace;font-size:8.5px;font-weight:700;padding:2px 6px;border-radius:4px}
+.tc-pri.p1{background:#fce8e8;color:var(--red)}
+.tc-pri.p2{background:var(--orange-bg);color:var(--orange)}
+.tc-pri.p3{background:var(--surface2);color:var(--muted)}
+
+.ft{text-align:center;padding:24px 0 0;color:var(--muted);font-size:10px;border-top:1px solid var(--border);margin-top:32px}
+
+@media(max-width:768px){.main{padding:18px 14px 60px}.hdr{padding:14px}.tabs{padding:0 14px}.branch,.ac-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<header class="hdr"><div class="hdr-in">
+  <div class="logo"><div class="logo-i">📡</div><div><h1>Arena Scoreboard — Tracking Active</h1><small>Feature Specification Document</small></div></div>
+  <div class="tags"><span class="tg v">v1.0</span><span class="tg">MOBILE APP</span><span class="tg">QA & DEV</span></div>
+</div></header>
+
+<div class="tabs"><div class="tabs-in">
+  <button class="tb on" onclick="go('us')"><span class="num">1</span>📝 User Story</button>
+  <button class="tb" onclick="go('fl')"><span class="num">2</span>🔀 Flow Diagram</button>
+  <button class="tb" onclick="go('tc')"><span class="num">3</span>🧪 Test Cases</button>
+</div></div>
+
+<div class="main">
+
+<!-- ═══ TAB 1: USER STORY ═══ -->
+<div id="p-us" class="pan on">
+
+  <div class="us-hero">
+    <div class="us-label">User Story</div>
+    <div class="us-title">Tracking Active — Ghi nhận trạng thái hoạt động khi mở app</div>
+    <div class="us-as">
+      <em>As a</em> admin hệ thống Arena,<br>
+      <em>I want to</em> tự động ghi nhận activity mỗi khi nhân viên/chủ club mở app Arena Scoreboard,<br>
+      <em>So that</em> tôi có thể theo dõi khách hàng nào đang thực sự sử dụng app tại club.
+    </div>
+    <div class="info-grid">
+      <div class="info-item"><div class="il">Trigger</div><div class="iv">Mở app (Home screen)</div></div>
+      <div class="info-item"><div class="il">Action</div><div class="iv">Open App</div></div>
+      <div class="info-item"><div class="il">Tần suất</div><div class="iv">Mỗi lần mở app</div></div>
+      <div class="info-item"><div class="il">Ưu tiên</div><div class="iv">Cao</div></div>
+    </div>
+  </div>
+
+  <div class="sec">Actors</div>
+  <div class="act-grid">
+    <div class="act"><div class="act-i u">👤</div><div><h3>User (Nhân viên / Chủ club)</h3><p>Mở app Arena Scoreboard tại club</p></div></div>
+    <div class="act"><div class="act-i s">🖥️</div><div><h3>Backend Server</h3><p>Nhận API call, xử lý và ghi activity</p></div></div>
+    <div class="act"><div class="act-i h">🗄️</div><div><h3>Database</h3><p>Lưu trữ bản ghi activity</p></div></div>
+    <div class="act"><div class="act-i c">👨‍💼</div><div><h3>Admin</h3><p>Xem báo cáo activity để biết khách hàng có xài app không</p></div></div>
+  </div>
+
+  <div class="sec">Acceptance Criteria</div>
+  <div class="ac-grid">
+
+    <div class="ac-card">
+      <h4><span class="ac-num">1</span> Ghi nhận activity thành công</h4>
+      <div class="ac-line"><span class="ac-kw kw-g">GIVEN</span> User mở app Arena Scoreboard và vào màn hình Home</div>
+      <div class="ac-line"><span class="ac-kw kw-w">WHEN</span> App gọi API tracking với action = "Open App"</div>
+      <div class="ac-line"><span class="ac-kw kw-t">THEN</span> BE nhận request, ghi activity vào database thành công</div>
+    </div>
+
+    <div class="ac-card">
+      <h4><span class="ac-num">2</span> Ghi nhận mỗi lần mở app</h4>
+      <div class="ac-line"><span class="ac-kw kw-g">GIVEN</span> User đã mở app trước đó và đóng app</div>
+      <div class="ac-line"><span class="ac-kw kw-w">WHEN</span> User mở lại app lần nữa</div>
+      <div class="ac-line"><span class="ac-kw kw-t">THEN</span> Hệ thống ghi nhận một bản ghi activity mới</div>
+    </div>
+
+    <div class="ac-card">
+      <h4><span class="ac-num">3</span> Xử lý khi API lỗi</h4>
+      <div class="ac-line"><span class="ac-kw kw-g">GIVEN</span> User mở app nhưng không có kết nối mạng hoặc server lỗi</div>
+      <div class="ac-line"><span class="ac-kw kw-w">WHEN</span> App gọi API tracking thất bại</div>
+      <div class="ac-line"><span class="ac-kw kw-t">THEN</span> App vẫn hoạt động bình thường, không ảnh hưởng trải nghiệm user</div>
+      <div class="ac-line"><span class="ac-kw kw-a">AND</span> Không ghi activity vào database</div>
+    </div>
+
+    <div class="ac-card">
+      <h4><span class="ac-num">4</span> Admin xem được activity</h4>
+      <div class="ac-line"><span class="ac-kw kw-g">GIVEN</span> Hệ thống đã ghi nhận activity từ nhiều thiết bị/club</div>
+      <div class="ac-line"><span class="ac-kw kw-w">WHEN</span> Admin truy cập dashboard hoặc báo cáo</div>
+      <div class="ac-line"><span class="ac-kw kw-t">THEN</span> Admin thấy được danh sách các thiết bị/club có hoạt động</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══ TAB 2: FLOW DIAGRAM ═══ -->
+<div id="p-fl" class="pan">
+
+  <div class="sec">Flow chính — Tracking Active khi mở app</div>
+
+  <div class="flow">
+
+    <!-- Step 1 -->
+    <div class="fn">
+      <div class="fn-h"><span class="badge usr">USER</span><span class="fn-t">1. Mở app Arena Scoreboard</span></div>
+      <div class="fn-b">User (nhân viên/chủ club) mở app trên thiết bị tại club. App khởi động và load màn hình <strong>Home</strong>.</div>
+    </div>
+
+    <div class="conn"><span class="conn-lbl info">Home loaded</span></div>
+
+    <!-- Step 2 -->
+    <div class="fn">
+      <div class="fn-h"><span class="badge sys">SYSTEM</span><span class="fn-t">2. Gọi API Tracking</span></div>
+      <div class="fn-b">App tự động gọi API đến BE với action = <code>"Open App"</code>, kèm thông tin thiết bị (device ID, club ID, timestamp).</div>
+    </div>
+
+    <div class="conn"><span class="conn-lbl info">API Request</span></div>
+
+    <!-- Step 3: Decision -->
+    <div class="diamond-wrap">
+      <div class="diamond">API response?</div>
+    </div>
+
+    <div class="conn"></div>
+
+    <!-- Branch -->
+    <div class="branch">
+      <div class="fn win">
+        <div class="fn-h"><span class="badge ok">SUCCESS</span><span class="fn-t">3a. Ghi activity thành công</span></div>
+        <div class="fn-b">BE nhận request → validate → ghi bản ghi activity vào <strong>database</strong> với thông tin: device ID, club ID, action, timestamp. Trả về <code>200 OK</code>.</div>
+      </div>
+      <div class="fn lose">
+        <div class="fn-h"><span class="badge no">FAILURE</span><span class="fn-t">3b. API lỗi / Mất kết nối</span></div>
+        <div class="fn-b">Server không phản hồi hoặc trả lỗi. <strong>App không bị ảnh hưởng</strong> — user vẫn sử dụng bình thường. Activity không được ghi nhận.</div>
+      </div>
+    </div>
+
+    <div class="conn"></div>
+
+    <!-- Step 4 -->
+    <div class="fn">
+      <div class="fn-h"><span class="badge usr">USER</span><span class="fn-t">4. Tiếp tục sử dụng app</span></div>
+      <div class="fn-b">User tiếp tục sử dụng app bình thường tại màn hình Home. Tracking xảy ra ngầm, <strong>không có popup hay thông báo</strong> nào hiển thị cho user.</div>
+    </div>
+
+    <div class="conn"><span class="conn-lbl info">Async / Background</span></div>
+
+    <!-- Step 5 -->
+    <div class="fn">
+      <div class="fn-h"><span class="badge sys">SYSTEM</span><span class="fn-t">5. Admin xem báo cáo activity</span></div>
+      <div class="fn-b">Admin truy cập hệ thống quản lý, xem danh sách các thiết bị/club đã có activity → biết được <strong>khách hàng nào đang sử dụng app</strong>.</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══ TAB 3: TEST CASES ═══ -->
+<div id="p-tc" class="pan">
+
+  <div class="tc-stats">
+    <div class="tc-stat g"><div class="n">5</div><div class="l">Happy Path</div></div>
+    <div class="tc-stat r"><div class="n">5</div><div class="l">Negative</div></div>
+    <div class="tc-stat b"><div class="n">3</div><div class="l">Performance</div></div>
+    <div class="tc-stat o"><div class="n">1</div><div class="l">Edge Case</div></div>
+  </div>
+
+  <div class="tc-filters">
+    <button class="tc-fbtn on" onclick="flt('all',this)">Tất cả (14)</button>
+    <button class="tc-fbtn" onclick="flt('happy',this)">✅ Happy Path</button>
+    <button class="tc-fbtn" onclick="flt('neg',this)">❌ Negative</button>
+    <button class="tc-fbtn" onclick="flt('perf',this)">⚡ Performance</button>
+    <button class="tc-fbtn" onclick="flt('edge',this)">🔶 Edge Case</button>
+  </div>
+
+  <table class="tc-table" id="tc-tbl">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Loại</th>
+        <th>Ưu tiên</th>
+        <th>Tiêu đề</th>
+        <th>Bước thực hiện</th>
+        <th>Kết quả mong đợi</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr data-cat="happy">
+        <td class="tc-id">TC-01</td>
+        <td><span class="tc-tag happy">HAPPY</span></td>
+        <td><span class="tc-pri p1">P1</span></td>
+        <td>Mở app lần đầu — ghi activity thành công</td>
+        <td>1. Mở app Arena Scoreboard<br>2. Chờ Home screen load xong<br>3. Kiểm tra database</td>
+        <td>Database có bản ghi activity với action = "Open App", device ID, club ID, timestamp chính xác</td>
+      </tr>
+      <tr data-cat="happy">
+        <td class="tc-id">TC-02</td>
+        <td><span class="tc-tag happy">HAPPY</span></td>
+        <td><span class="tc-pri p1">P1</span></td>
+        <td>Mở app nhiều lần — mỗi lần ghi 1 bản ghi</td>
+        <td>1. Mở app → đóng app<br>2. Mở lại app<br>3. Kiểm tra database</td>
+        <td>Database có 2 bản ghi activity riêng biệt với timestamp khác nhau</td>
+      </tr>
+      <tr data-cat="happy">
+        <td class="tc-id">TC-03</td>
+        <td><span class="tc-tag happy">HAPPY</span></td>
+        <td><span class="tc-pri p1">P1</span></td>
+        <td>API trả về 200 OK</td>
+        <td>1. Mở app với kết nối mạng ổn định<br>2. Monitor API response</td>
+        <td>API trả về status 200, response body hợp lệ</td>
+      </tr>
+      <tr data-cat="happy">
+        <td class="tc-id">TC-04</td>
+        <td><span class="tc-tag happy">HAPPY</span></td>
+        <td><span class="tc-pri p2">P2</span></td>
+        <td>Activity chứa đầy đủ thông tin</td>
+        <td>1. Mở app<br>2. Query database lấy bản ghi mới nhất</td>
+        <td>Bản ghi chứa: device_id, club_id, action ("Open App"), created_at (timestamp)</td>
+      </tr>
+      <tr data-cat="happy">
+        <td class="tc-id">TC-05</td>
+        <td><span class="tc-tag happy">HAPPY</span></td>
+        <td><span class="tc-pri p2">P2</span></td>
+        <td>Admin xem được activity trên dashboard</td>
+        <td>1. Mở app từ thiết bị<br>2. Đăng nhập admin dashboard<br>3. Xem activity log</td>
+        <td>Admin thấy bản ghi activity tương ứng với thiết bị/club vừa mở app</td>
+      </tr>
+
+      <tr data-cat="neg">
+        <td class="tc-id">TC-06</td>
+        <td><span class="tc-tag neg">NEGATIVE</span></td>
+        <td><span class="tc-pri p1">P1</span></td>
+        <td>Mở app khi không có mạng</td>
+        <td>1. Tắt WiFi / 4G<br>2. Mở app Arena Scoreboard<br>3. Quan sát app hoạt động</td>
+        <td>App vẫn mở bình thường, không crash. Activity không được ghi vào DB</td>
+      </tr>
+      <tr data-cat="neg">
+        <td class="tc-id">TC-07</td>
+        <td><span class="tc-tag neg">NEGATIVE</span></td>
+        <td><span class="tc-pri p1">P1</span></td>
+        <td>Server BE bị down</td>
+        <td>1. Stop BE server<br>2. Mở app<br>3. Quan sát app hoạt động</td>
+        <td>App không bị ảnh hưởng, user sử dụng bình thường. Không có error hiển thị</td>
+      </tr>
+      <tr data-cat="neg">
+        <td class="tc-id">TC-08</td>
+        <td><span class="tc-tag neg">NEGATIVE</span></td>
+        <td><span class="tc-pri p2">P2</span></td>
+        <td>API trả về lỗi 500</td>
+        <td>1. Mock API trả 500<br>2. Mở app<br>3. Quan sát UI</td>
+        <td>App hoạt động bình thường, không hiển thị error cho user</td>
+      </tr>
+      <tr data-cat="neg">
+        <td class="tc-id">TC-09</td>
+        <td><span class="tc-tag neg">NEGATIVE</span></td>
+        <td><span class="tc-pri p2">P2</span></td>
+        <td>API timeout</td>
+        <td>1. Giả lập network delay > timeout threshold<br>2. Mở app<br>3. Quan sát</td>
+        <td>App không bị block bởi API call. Home screen load bình thường</td>
+      </tr>
+      <tr data-cat="neg">
+        <td class="tc-id">TC-10</td>
+        <td><span class="tc-tag neg">NEGATIVE</span></td>
+        <td><span class="tc-pri p2">P2</span></td>
+        <td>Database connection lỗi</td>
+        <td>1. Ngắt kết nối DB<br>2. Mở app<br>3. Kiểm tra BE log</td>
+        <td>BE log error, app user-side không bị ảnh hưởng</td>
+      </tr>
+
+      <tr data-cat="perf">
+        <td class="tc-id">TC-11</td>
+        <td><span class="tc-tag perf">PERF</span></td>
+        <td><span class="tc-pri p2">P2</span></td>
+        <td>API response time</td>
+        <td>1. Mở app<br>2. Đo thời gian API tracking response</td>
+        <td>API response ≤ 500ms trong điều kiện mạng bình thường</td>
+      </tr>
+      <tr data-cat="perf">
+        <td class="tc-id">TC-12</td>
+        <td><span class="tc-tag perf">PERF</span></td>
+        <td><span class="tc-pri p2">P2</span></td>
+        <td>API không block UI</td>
+        <td>1. Mở app<br>2. Đo thời gian Home screen hiển thị<br>3. So sánh có/không có tracking</td>
+        <td>Home screen load time không bị ảnh hưởng đáng kể (API gọi async/background)</td>
+      </tr>
+      <tr data-cat="perf">
+        <td class="tc-id">TC-13</td>
+        <td><span class="tc-tag perf">PERF</span></td>
+        <td><span class="tc-pri p3">P3</span></td>
+        <td>Nhiều thiết bị mở app đồng thời</td>
+        <td>1. 50+ thiết bị mở app cùng lúc<br>2. Kiểm tra DB records</td>
+        <td>Tất cả activity đều được ghi nhận, không mất data</td>
+      </tr>
+
+      <tr data-cat="edge">
+        <td class="tc-id">TC-14</td>
+        <td><span class="tc-tag hw">EDGE</span></td>
+        <td><span class="tc-pri p3">P3</span></td>
+        <td>App từ background lên foreground</td>
+        <td>1. Mở app (đã tracking)<br>2. Nhấn Home, app vào background<br>3. Mở lại app từ background</td>
+        <td>Xác định rõ: có ghi activity mới khi resume từ background hay không (theo business rule)</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="ft">Arena Scoreboard — Tracking Active Spec v1.0 · QA & Dev</div>
+</div>
+
+<script>
+function go(id){
+  document.querySelectorAll('.pan').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.tb').forEach(t=>t.classList.remove('on'));
+  document.getElementById('p-'+id).classList.add('on');
+  const m={us:'User Story',fl:'Flow',tc:'Test'};
+  document.querySelectorAll('.tb').forEach(t=>{if(t.textContent.includes(m[id]))t.classList.add('on')});
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function flt(cat,btn){
+  document.querySelectorAll('.tc-fbtn').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  document.querySelectorAll('#tc-tbl tbody tr').forEach(r=>{
+    r.style.display=(cat==='all'||r.dataset.cat===cat)?'':'none';
+  });
+}
+</script>
+</body>
+</html>
