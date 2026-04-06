@@ -1,182 +1,338 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Feature Documents</title>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Arena — Feature Docs</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0d1117;--surface:#161b22;--surface2:#21262d;
+  --border:#30363d;--border2:#444c56;
+  --text:#e6edf3;--text2:#848d97;--text3:#c9d1d9;
+  --blue:#58a6ff;--blue-bg:rgba(88,166,255,.1);--blue-b:rgba(88,166,255,.2);
+  --green:#3fb950;--green-bg:rgba(63,185,80,.1);--green-b:rgba(63,185,80,.2);
+  --orange:#d29922;--orange-bg:rgba(210,153,34,.1);
+  --purple:#bc8cff;--purple-bg:rgba(188,140,255,.1);
+  --r:10px;
+}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;min-height:100vh}
 
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background: #0a1228;
-      color: #e0e8ff;
-      min-height: 100vh;
-      padding: 32px 24px;
-    }
+/* Header */
+.hdr{background:var(--surface);border-bottom:1px solid var(--border);padding:0 32px;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.hdr-brand{display:flex;align-items:center;gap:10px;font-size:15px;font-weight:700;color:var(--text)}
+.hdr-brand .dot{width:8px;height:8px;background:var(--green);border-radius:50%;box-shadow:0 0 0 3px var(--green-bg)}
+.hdr-tag{font-size:11px;color:var(--text2);background:var(--surface2);border:1px solid var(--border);padding:2px 8px;border-radius:20px}
 
-    h1 {
-      text-align: center;
-      font-size: 24px;
-      color: #008cff;
-      margin-bottom: 32px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-    }
+/* Layout */
+.layout{display:flex;min-height:calc(100vh - 56px)}
 
-    /* Breadcrumb */
-    .breadcrumb {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 24px;
-      font-size: 14px;
-      color: #6080aa;
-      min-height: 24px;
-    }
-    .breadcrumb span { cursor: pointer; color: #008cff; }
-    .breadcrumb span:hover { text-decoration: underline; }
-    .breadcrumb .sep { color: #334466; }
+/* Sidebar */
+.sidebar{width:220px;flex-shrink:0;background:var(--surface);border-right:1px solid var(--border);padding:16px 0;position:sticky;top:56px;height:calc(100vh - 56px);overflow-y:auto}
+.sb-section{padding:6px 16px;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;color:var(--text2);margin-top:8px}
+.sb-item{display:flex;align-items:center;gap:8px;padding:6px 16px;font-size:13px;color:var(--text2);cursor:pointer;transition:.15s;border-left:2px solid transparent}
+.sb-item:hover{color:var(--text3);background:var(--surface2)}
+.sb-item.active{color:var(--blue);border-left-color:var(--blue);background:var(--blue-bg)}
+.sb-item .sb-icon{font-size:13px;width:16px;text-align:center;flex-shrink:0}
+.sb-sub{padding-left:40px;font-size:12px;color:var(--text2);cursor:pointer;padding-top:4px;padding-bottom:4px;transition:.15s;border-left:2px solid transparent}
+.sb-sub:hover{color:var(--text3)}
+.sb-sub.active{color:var(--blue);border-left-color:var(--blue)}
+.sb-divider{margin:8px 16px;border:none;border-top:1px solid var(--border)}
 
-    /* Grid */
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-      gap: 16px;
-    }
+/* Main */
+.main{flex:1;padding:32px;overflow-x:hidden}
 
-    .card {
-      background: #101e3a;
-      border: 1px solid #1e3060;
-      border-radius: 12px;
-      padding: 24px 16px;
-      cursor: pointer;
-      text-align: center;
-      transition: all 0.2s;
-      user-select: none;
-    }
-    .card:hover {
-      border-color: #008cff;
-      background: #152440;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 20px rgba(0,140,255,0.15);
-    }
-    .card .icon { font-size: 36px; margin-bottom: 12px; }
-    .card .label { font-size: 15px; font-weight: 600; color: #c0d8ff; }
-    .card .sub { font-size: 12px; color: #4a6080; margin-top: 4px; }
+/* Breadcrumb */
+.bc{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text2);margin-bottom:24px}
+.bc a{color:var(--blue);cursor:pointer;text-decoration:none}
+.bc a:hover{text-decoration:underline}
+.bc-sep{color:var(--border2)}
 
-    /* Task cards */
-    .task-card {
-      background: #101e3a;
-      border: 1px solid #1e3060;
-      border-radius: 12px;
-      padding: 20px;
-      cursor: pointer;
-      transition: all 0.2s;
-      display: flex;
-      align-items: center;
-      gap: 16px;
-    }
-    .task-card:hover {
-      border-color: #008cff;
-      background: #152440;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 20px rgba(0,140,255,0.15);
-    }
-    .task-card .icon { font-size: 28px; }
-    .task-card .info .name { font-size: 15px; font-weight: 600; color: #c0d8ff; }
-    .task-card .info .path { font-size: 12px; color: #4a6080; margin-top: 4px; }
+/* Page title */
+.pg-title{font-size:22px;font-weight:700;color:var(--text);margin-bottom:6px}
+.pg-sub{font-size:14px;color:var(--text2);margin-bottom:28px}
 
-    .task-grid {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
+/* Stats row */
+.stats{display:flex;gap:12px;margin-bottom:28px;flex-wrap:wrap}
+.stat{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px 16px;display:flex;align-items:center;gap:10px}
+.stat .sn{font-size:20px;font-weight:700;color:var(--text)}
+.stat .sl{font-size:11px;color:var(--text2);margin-top:1px}
 
-    .empty { text-align: center; color: #334466; padding: 48px; font-size: 14px; }
-  </style>
+/* Year/Quarter grid */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px}
+.gcard{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:20px;cursor:pointer;transition:.2s;text-align:center;position:relative;overflow:hidden}
+.gcard:hover{border-color:var(--border2);background:var(--surface2);transform:translateY(-2px)}
+.gcard .gc-icon{font-size:28px;margin-bottom:10px}
+.gcard .gc-title{font-size:14px;font-weight:700;color:var(--text);margin-bottom:3px}
+.gcard .gc-sub{font-size:11px;color:var(--text2)}
+.gcard .gc-badge{position:absolute;top:10px;right:10px;font-size:10px;font-weight:600;padding:2px 7px;border-radius:20px;background:var(--green-bg);border:1px solid var(--green-b);color:var(--green)}
+
+/* Task list */
+.task-list{display:flex;flex-direction:column;gap:8px}
+.task{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px 18px;cursor:pointer;transition:.2s;display:flex;align-items:center;gap:14px}
+.task:hover{border-color:var(--blue-b);background:var(--blue-bg);transform:translateX(3px)}
+.task-icon{width:36px;height:36px;border-radius:8px;background:var(--surface2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.task-info{flex:1;min-width:0}
+.task-name{font-size:14px;font-weight:600;color:var(--text);margin-bottom:2px}
+.task-path{font-size:11px;color:var(--text2);font-family:monospace;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.task-arrow{color:var(--text2);font-size:16px;transition:.15s}
+.task:hover .task-arrow{color:var(--blue);transform:translateX(3px)}
+.task-tags{display:flex;gap:5px;margin-top:5px;flex-wrap:wrap}
+.tag{font-size:10px;padding:1px 7px;border-radius:20px;font-weight:600}
+.tag.spec{background:var(--blue-bg);border:1px solid var(--blue-b);color:var(--blue)}
+.tag.ux{background:var(--purple-bg);border:1px solid rgba(188,140,255,.2);color:var(--purple)}
+.tag.dev{background:var(--green-bg);border:1px solid var(--green-b);color:var(--green)}
+.tag.qa{background:var(--orange-bg);border:1px solid rgba(210,153,34,.2);color:var(--orange)}
+
+/* Q badge colors */
+.q1{border-color:rgba(63,185,80,.3)!important;color:var(--green)!important}
+.q2{border-color:rgba(88,166,255,.3)!important;color:var(--blue)!important}
+.q3{border-color:rgba(210,153,34,.3)!important;color:var(--orange)!important}
+.q4{border-color:rgba(188,140,255,.3)!important;color:var(--purple)!important}
+
+/* Empty */
+.empty{text-align:center;padding:60px 20px;color:var(--text2)}
+.empty .ei{font-size:40px;margin-bottom:12px}
+.empty p{font-size:14px}
+
+/* Search */
+.search-wrap{position:relative;margin-bottom:20px}
+.search-wrap input{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:9px 14px 9px 36px;font-size:13px;color:var(--text);outline:none;transition:.2s}
+.search-wrap input:focus{border-color:var(--blue-b)}
+.search-wrap input::placeholder{color:var(--text2)}
+.search-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text2);font-size:14px;pointer-events:none}
+
+/* Loading */
+.loading{display:flex;align-items:center;gap:8px;color:var(--text2);font-size:13px;padding:20px 0}
+.spinner{width:14px;height:14px;border:2px solid var(--border);border-top-color:var(--blue);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* Error banner */
+.notice{background:var(--orange-bg);border:1px solid rgba(210,153,34,.25);border-radius:8px;padding:10px 14px;font-size:12px;color:var(--orange);margin-bottom:16px;line-height:1.6}
+
+@media(max-width:768px){
+  .sidebar{display:none}
+  .main{padding:20px 16px}
+  .grid{grid-template-columns:repeat(auto-fill,minmax(140px,1fr))}
+}
+</style>
 </head>
 <body>
 
-<h1>📋 Feature Documents</h1>
-<div class="breadcrumb" id="breadcrumb"></div>
-<div id="content"></div>
+<header class="hdr">
+  <div class="hdr-brand">
+    <div class="dot"></div>
+    Arena — Feature Docs
+  </div>
+  <span class="hdr-tag">Spec Portal</span>
+</header>
+
+<div class="layout">
+  <nav class="sidebar" id="sidebar">
+    <div class="sb-section">Navigator</div>
+    <div class="sb-item active" id="sb-home" onclick="goHome()">
+      <span class="sb-icon">⊞</span> Tất cả
+    </div>
+    <hr class="sb-divider">
+    <div id="sb-tree"></div>
+  </nav>
+
+  <main class="main" id="main"></main>
+</div>
 
 <script>
-  // Cấu trúc dữ liệu — thêm file mới vào đây
-  const data = {
-    "2026": {
-      "Q2": [
-        { name: "Đưa App Lên CH Play",        file: "2026/Q2/dua-app-len-chplay-spec.html" },
-        { name: "UX/UI Mission Màn Chiếu",     file: "2026/Q2/ux-ui-mission-may-chieu-spec.html" },
-        { name: "Tracking Active",             file: "2026/Q2/tracking-active-spec.html" },
-        { name: "Popup Error",                 file: "2026/Q2/popup-error-spec.html" },
-      ]
+let DATA = {};
+let state = { year: null, q: null, search: "" };
+
+const ICONS = { year:"📅", q:"🗂️", spec:"📄", ux:"🎨", dev:"⚙️", qa:"🧪" };
+const TAG_ICONS = { spec:"📄", ux:"🎨", dev:"⚙️", qa:"🧪" };
+
+function taskIcon(tags=[]) {
+  if(tags.includes("ux")) return "🎨";
+  if(tags.includes("dev")) return "⚙️";
+  if(tags.includes("qa")) return "🧪";
+  return "📄";
+}
+
+function qClass(q) {
+  return {Q1:"q1",Q2:"q2",Q3:"q3",Q4:"q4"}[q]||"";
+}
+
+/* ────────────────────────────────────────────────
+   SIDEBAR
+   ──────────────────────────────────────────────── */
+function buildSidebar() {
+  const el = document.getElementById("sb-tree");
+  let html = "";
+  for(const yr of Object.keys(DATA).sort().reverse()) {
+    html += `<div class="sb-section">${yr}</div>`;
+    for(const q of Object.keys(DATA[yr]).sort()) {
+      const count = DATA[yr][q].length;
+      const active = state.year===yr && state.q===q;
+      html += `<div class="sb-item${active?" active":""}" onclick="selectQ('${yr}','${q}')">
+        <span class="sb-icon">🗂️</span>
+        <span style="flex:1">${q}</span>
+        <span style="font-size:10px;color:var(--text2)">${count}</span>
+      </div>`;
     }
-  };
+  }
+  el.innerHTML = html;
+  document.getElementById("sb-home").className = "sb-item" + ((!state.year&&!state.q)?" active":"");
+}
 
-  let state = { year: null, quarter: null };
+/* ────────────────────────────────────────────────
+   RENDER
+   ──────────────────────────────────────────────── */
+function render() {
+  buildSidebar();
+  const el = document.getElementById("main");
 
-  function render() {
-    renderBreadcrumb();
-    const el = document.getElementById('content');
+  // COUNT helpers
 
-    if (!state.year) {
-      // Hiện danh sách năm
-      const years = Object.keys(data).sort();
-      el.innerHTML = `<div class="grid">${years.map(y => `
-        <div class="card" onclick="selectYear('${y}')">
-          <div class="icon">📅</div>
-          <div class="label">${y}</div>
-          <div class="sub">${Object.keys(data[y]).length} quý</div>
-        </div>`).join('')}</div>`;
 
-    } else if (!state.quarter) {
-      // Hiện danh sách quý
-      const quarters = Object.keys(data[state.year]).sort();
-      el.innerHTML = `<div class="grid">${quarters.map(q => `
-        <div class="card" onclick="selectQuarter('${q}')">
-          <div class="icon">🗂️</div>
-          <div class="label">${q}</div>
-          <div class="sub">${data[state.year][q].length} task</div>
-        </div>`).join('')}</div>`;
+  if(!state.year && !state.q) {
+    // HOME
+    const years = Object.keys(DATA).sort().reverse();
+    const allTasks = years.flatMap(yr=>
+      Object.entries(DATA[yr]).flatMap(([q,tasks])=>tasks.map(t=>({...t,yr,q})))
+    );
+    const filtered = state.search
+      ? allTasks.filter(t=>t.name.toLowerCase().includes(state.search.toLowerCase()))
+      : null;
 
+    let html = `
+      <div class="pg-title">📋 Feature Documents</div>
+      <div class="pg-sub">Tổng hợp spec & tài liệu kỹ thuật dự án Arena</div>
+
+      <div class="search-wrap">
+        <span class="search-icon">🔍</span>
+        <input type="text" placeholder="Tìm kiếm spec..." value="${state.search}"
+          oninput="state.search=this.value;render()" />
+      </div>`;
+
+    if(filtered) {
+      html += `<div class="pg-sub" style="margin-bottom:14px">Kết quả: <b style="color:var(--text)">${filtered.length}</b> spec</div>`;
+      html += renderTaskList(filtered, true);
     } else {
-      // Hiện danh sách task
-      const tasks = data[state.year][state.quarter];
-      if (!tasks || tasks.length === 0) {
-        el.innerHTML = `<div class="empty">Chưa có task nào</div>`;
-        return;
+      for(const yr of years) {
+        html += `<div class="sb-section" style="margin-top:0;margin-bottom:12px">${yr}</div>`;
+        html += `<div class="grid" style="margin-bottom:24px">`;
+        for(const q of Object.keys(DATA[yr]).sort()) {
+          const count = DATA[yr][q].length;
+          html += `<div class="gcard" onclick="selectQ('${yr}','${q}')">
+            <div class="gc-icon">🗂️</div>
+            <div class="gc-title">${q}</div>
+            <div class="gc-sub">${count} spec${count!==1?"s":""}</div>
+            <span class="gc-badge ${qClass(q)}" style="position:absolute;top:10px;right:10px">${yr}</span>
+          </div>`;
+        }
+        html += `</div>`;
       }
-      el.innerHTML = `<div class="task-grid">${tasks.map(t => `
-        <div class="task-card" onclick="openFile('${t.file}')">
-          <div class="icon">📄</div>
-          <div class="info">
-            <div class="name">${t.name}</div>
-            <div class="path">${t.file}</div>
-          </div>
-        </div>`).join('')}</div>`;
     }
-  }
 
-  function renderBreadcrumb() {
-    const el = document.getElementById('breadcrumb');
-    let html = `<span onclick="goHome()">🏠 Home</span>`;
-    if (state.year) {
-      html += `<span class="sep">›</span><span onclick="selectYear('${state.year}')">${state.year}</span>`;
-    }
-    if (state.quarter) {
-      html += `<span class="sep">›</span><span>${state.quarter}</span>`;
-    }
     el.innerHTML = html;
+
+  } else if(state.year && !state.q) {
+    // YEAR VIEW
+    const yr = state.year;
+    const quarters = Object.keys(DATA[yr]).sort();
+    el.innerHTML = `
+      ${renderBC([{label:"Home",fn:"goHome()"}], yr)}
+      <div class="pg-title">${yr}</div>
+      <div class="pg-sub">Chọn quý để xem spec</div>
+      <div class="grid">${quarters.map(q=>{
+        const count = DATA[yr][q].length;
+        return `<div class="gcard" onclick="selectQ('${yr}','${q}')">
+          <div class="gc-icon">🗂️</div>
+          <div class="gc-title">${q}</div>
+          <div class="gc-sub">${count} spec</div>
+        </div>`;
+      }).join("")}</div>`;
+
+  } else {
+    // QUARTER VIEW
+    const tasks = DATA[state.year][state.q];
+    const filtered = state.search
+      ? tasks.filter(t=>t.name.toLowerCase().includes(state.search.toLowerCase()))
+      : tasks;
+
+    el.innerHTML = `
+      ${renderBC([{label:"Home",fn:"goHome()"},{label:state.year,fn:`selectYear('${state.year}')`}], state.q)}
+      <div class="pg-title">${state.year} · ${state.q}</div>
+      <div class="pg-sub">${tasks.length} spec document${tasks.length!==1?"s":""}</div>
+      <div class="search-wrap">
+        <span class="search-icon">🔍</span>
+        <input type="text" placeholder="Lọc spec trong quý này..." value="${state.search}"
+          oninput="state.search=this.value;render()" />
+      </div>
+      ${filtered.length===0
+        ? `<div class="empty"><div class="ei">📭</div><p>Không tìm thấy spec nào</p></div>`
+        : renderTaskList(filtered)}`;
   }
+}
 
-  function goHome()            { state = { year: null, quarter: null }; render(); }
-  function selectYear(y)       { state = { year: y, quarter: null };    render(); }
-  function selectQuarter(q)    { state.quarter = q;                     render(); }
-  function openFile(path)      { window.open(path, '_blank'); }
+function renderTaskList(tasks, showQuarter=false) {
+  if(!tasks.length) return `<div class="empty"><div class="ei">📭</div><p>Chưa có spec nào</p></div>`;
+  return `<div class="task-list">${tasks.map(t=>`
+    <div class="task" onclick="window.open('${t.file}','_blank')">
+      <div class="task-icon">${taskIcon(t.tags||[])}</div>
+      <div class="task-info">
+        <div class="task-name">${t.name}</div>
+        ${showQuarter?`<div class="task-path" style="color:var(--blue);margin-bottom:2px">${t.yr} · ${t.q}</div>`:""}
+        <div class="task-path">${t.file}</div>
+        ${(t.tags||[]).length?`<div class="task-tags">${t.tags.map(tag=>`<span class="tag ${tag}">${tag}</span>`).join("")}</div>`:""}
+      </div>
+      <div class="task-arrow">›</div>
+    </div>`).join("")}</div>`;
+}
 
-  render();
+function renderBC(crumbs, current) {
+  let html = `<div class="bc">`;
+  for(const c of crumbs) {
+    html += `<a onclick="${c.fn}">${c.label}</a><span class="bc-sep">/</span>`;
+  }
+  html += `<span style="color:var(--text3)">${current}</span></div>`;
+  return html;
+}
+
+/* ────────────────────────────────────────────────
+   NAVIGATION
+   ──────────────────────────────────────────────── */
+function goHome()            { state={year:null,q:null,search:""}; render(); }
+function selectYear(yr)      { state={year:yr,q:null,search:""};   render(); }
+function selectQ(yr,q)       { state={year:yr,q,search:""};        render(); }
+
+// Load manifest.json rồi mới render
+document.getElementById("main").innerHTML =
+  `<div style="display:flex;align-items:center;gap:10px;color:var(--text2);padding:40px 0">
+    <div style="width:14px;height:14px;border:2px solid var(--border);border-top-color:var(--blue);border-radius:50%;animation:spin .8s linear infinite"></div>
+    Đang tải...
+  </div>`;
+
+fetch("manifest.json")
+  .then(r => r.json())
+  .then(json => { DATA = json; render(); })
+  .catch(() => {
+    document.getElementById("main").innerHTML =
+      `<div style="background:var(--orange-bg);border:1px solid rgba(210,153,34,.25);border-radius:8px;padding:14px 18px;color:var(--orange);font-size:13px;margin-top:20px">
+        ⚠️ Không tải được <code>manifest.json</code>. Kiểm tra file có cùng thư mục với index.html không.
+      </div>`;
+  });
 </script>
+
+<!--
+  ╔═══════════════════════════════════════════════════════════════╗
+  ║  ĐỂ THÊM SPEC MỚI: Chỉ sửa manifest.json — KHÔNG đụng file  ║
+  ║  index.html này nữa.                                          ║
+  ║                                                               ║
+  ║  Thêm 1 dòng vào đúng quý trong manifest.json:               ║
+  ║  { "name": "Tên feature",                                     ║
+  ║    "file": "2026/Q4/ten-file.html",                           ║
+  ║    "tags": ["spec","dev"] }                                   ║
+  ║                                                               ║
+  ║  Thêm quý mới: "Q4": [] trong năm tương ứng                  ║
+  ║  Thêm năm mới: "2027": { "Q1": [] }                          ║
+  ╚═══════════════════════════════════════════════════════════════╝
+-->
 </body>
 </html>

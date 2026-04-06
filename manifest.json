@@ -1,0 +1,12 @@
+{
+  "2026": {
+    "Q2": [
+      { "name": "Đưa App Lên CH Play",       "file": "2026/Q2/dua-app-len-chplay-spec.html",       "tags": ["spec","dev"] },
+      { "name": "UX/UI Mission Máy Chiếu",   "file": "2026/Q2/ux-ui-mission-may-chieu-spec.html",  "tags": ["ux","qa"] },
+      { "name": "Tracking Active",           "file": "2026/Q2/tracking-active-spec.html",           "tags": ["spec","dev","qa"] },
+      { "name": "Popup Error",               "file": "2026/Q2/popup-error-spec.html",               "tags": ["ux","qa"] }
+    ],
+    "Q3": [],
+    "Q4": []
+  }
+}
