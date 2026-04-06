@@ -347,7 +347,7 @@ function render(){
 function taskList(ts,showQ=false){
   if(!ts.length) return `<div class="empty"><div class="empty-icon">📭</div><p>Chưa có spec nào</p></div>`;
   return `<div class="task-list">${ts.map(t=>`
-    <div class="task" onclick="window.open('${t.file}','_blank')">
+    <div class="task" onclick="window.open('${t.file}','_self')">
       <div class="task-bar"></div>
       <div class="task-ic">${tIcon(t.tags||[])}</div>
       <div class="task-body">
