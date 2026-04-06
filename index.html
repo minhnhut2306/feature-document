@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Arena — Feature Docs</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -29,7 +28,7 @@
 }
 
 body {
-  font-family: 'Instrument Sans', sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   background: var(--bg);
   color: var(--ink);
   min-height: 100vh;
@@ -56,18 +55,18 @@ body {
   background: var(--accent);
   border-radius: 6px;
   display: flex; align-items: center; justify-content: center;
-  font-family: 'Syne', sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   font-size: 13px; font-weight: 800;
   color: #fff;
 }
 .hdr-name {
-  font-family: 'Syne', sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   font-size: 14px; font-weight: 700;
   color: var(--ink); letter-spacing: -.2px;
 }
 .hdr-name span { color: var(--muted); font-weight: 400; }
 .hdr-badge {
-  font-family: 'DM Mono', monospace;
+  font-family: 'Consolas', 'SF Mono', monospace;
   font-size: 10px; font-weight: 500;
   letter-spacing: .5px;
   color: var(--green);
@@ -100,11 +99,10 @@ body {
   transition: all .12s; font-weight: 500;
   user-select: none;
 }
-.sb-link:hover { color: var(--ink2); background: var(--bg); }
 .sb-link.active { color: var(--accent); border-left-color: var(--accent); background: #f0f0ff; font-weight: 600; }
 .sb-link .sb-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--line); flex-shrink: 0; }
 .sb-link.active .sb-dot { background: var(--accent); }
-.sb-link-count { margin-left: auto; font-family: 'DM Mono', monospace; font-size: 10px; color: var(--muted); }
+.sb-link-count { margin-left: auto; font-family: 'Consolas', 'SF Mono', monospace; font-size: 10px; color: var(--muted); }
 
 .sb-divider { height: 1px; background: var(--line); margin: 8px 12px; }
 
@@ -112,8 +110,7 @@ body {
   display: flex; align-items: center; justify-content: space-between;
   padding: 10px 16px 4px; cursor: pointer;
 }
-.sb-year-hdr:hover { background: var(--bg); }
-.sb-year-label { font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 700; color: var(--ink2); }
+.sb-year-label { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 11px; font-weight: 700; color: var(--ink2); }
 .sb-chevron { font-size: 10px; color: var(--muted); transition: transform .2s; }
 .sb-chevron.open { transform: rotate(180deg); }
 
@@ -121,11 +118,10 @@ body {
 .sb-q {
   display: flex; align-items: center; gap: 8px;
   padding: 6px 16px 6px 28px;
-  font-family: 'DM Mono', monospace; font-size: 11px;
+  font-family: 'Consolas', 'SF Mono', monospace; font-size: 11px;
   color: var(--muted); cursor: pointer;
   transition: all .12s; border-left: 2px solid transparent;
 }
-.sb-q:hover { color: var(--ink2); background: var(--bg); }
 .sb-q.active { color: var(--accent); background: #f0f0ff; border-left-color: var(--accent); font-weight: 500; }
 .sb-q.empty { opacity: .3; pointer-events: none; }
 .sb-q-count { margin-left: auto; font-size: 9px; }
@@ -138,7 +134,7 @@ body {
   display: flex; align-items: center; gap: 6px;
   font-size: 12px; color: var(--muted);
   margin-bottom: 24px;
-  font-family: 'DM Mono', monospace;
+  font-family: 'Consolas', 'SF Mono', monospace;
 }
 .bc-a { color: var(--accent); cursor: pointer; }
 .bc-a:hover { text-decoration: underline; }
@@ -166,12 +162,12 @@ body {
   pointer-events: none;
 }
 .home-hero-label {
-  font-family: 'DM Mono', monospace; font-size: 9px; font-weight: 500;
+  font-family: 'Consolas', 'SF Mono', monospace; font-size: 9px; font-weight: 500;
   letter-spacing: 2px; text-transform: uppercase;
   color: rgba(255,255,255,.4); margin-bottom: 8px;
 }
 .home-hero-title {
-  font-family: 'Syne', sans-serif; font-size: 26px; font-weight: 800;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 26px; font-weight: 800;
   color: #fff; letter-spacing: -.5px; margin-bottom: 6px; line-height: 1.2;
 }
 .home-hero-sub { font-size: 13px; color: rgba(255,255,255,.5); }
@@ -181,7 +177,7 @@ body {
   border: 1px solid rgba(255,255,255,.1);
   border-radius: 8px; padding: 10px 16px;
 }
-.hero-stat-n { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 800; color: #fff; line-height: 1; }
+.hero-stat-n { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 22px; font-weight: 800; color: #fff; line-height: 1; }
 .hero-stat-l { font-size: 11px; color: rgba(255,255,255,.4); margin-top: 2px; }
 
 /* SEARCH */
@@ -191,7 +187,7 @@ body {
   background: var(--surface); border: 1px solid var(--line);
   border-radius: 8px; padding: 10px 14px 10px 38px;
   font-size: 13px; color: var(--ink); outline: none;
-  font-family: 'Instrument Sans', sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   transition: border-color .15s, box-shadow .15s;
 }
 .search-wrap input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(61,59,255,.08); }
@@ -201,9 +197,9 @@ body {
 /* YEAR GRID */
 .yr-block { margin-bottom: 32px; }
 .yr-block-hdr { display: flex; align-items: baseline; gap: 10px; margin-bottom: 14px; }
-.yr-block-title { font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 800; color: var(--ink); text-transform: uppercase; letter-spacing: 1px; }
+.yr-block-title { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 13px; font-weight: 800; color: var(--ink); text-transform: uppercase; letter-spacing: 1px; }
 .yr-block-line { flex: 1; height: 1px; background: var(--line); }
-.yr-block-count { font-size: 11px; color: var(--muted); font-family: 'DM Mono', monospace; }
+.yr-block-count { font-size: 11px; color: var(--muted); font-family: 'Consolas', 'SF Mono', monospace; }
 
 .q-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
 .q-card {
@@ -212,68 +208,66 @@ body {
   cursor: pointer; transition: all .15s;
   position: relative; overflow: hidden;
 }
-.q-card:hover { border-color: var(--accent); box-shadow: 0 4px 16px rgba(61,59,255,.1); transform: translateY(-2px); }
-.q-card.empty { opacity: .3; pointer-events: none; }
+.q-card.empty { pointer-events: none; cursor: default; }
+.q-card.empty:hover { border-color: inherit; box-shadow: none; transform: none; }
 .q-card-accent {
-  position: absolute; top: 0; left: 0; right: 0; height: 2px;
-  background: linear-gradient(90deg, var(--accent), var(--accent2));
-  opacity: 0; transition: opacity .15s;
+  position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  transition: height .15s;
 }
-.q-card:hover .q-card-accent { opacity: 1; }
-.q-card-label { font-family: 'DM Mono', monospace; font-size: 9px; font-weight: 500; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
-.q-card-n { font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 800; color: var(--ink); line-height: 1; letter-spacing: -1px; }
+.q-card-label { font-family: 'Consolas', 'SF Mono', monospace; font-size: 9px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 6px; }
+.q-card-n { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 28px; font-weight: 800; line-height: 1; letter-spacing: -1px; }
 .q-card-sub { font-size: 11px; color: var(--muted); margin-top: 3px; }
 
 /* SECTION HEADER */
 .sec-hdr {
-  font-family: 'DM Mono', monospace; font-size: 9px; font-weight: 500;
+  font-family: 'Consolas', 'SF Mono', monospace; font-size: 9px; font-weight: 500;
   letter-spacing: 2px; text-transform: uppercase; color: var(--muted);
   margin-bottom: 10px; display: flex; align-items: center; gap: 10px;
 }
 .sec-hdr::after { content: ''; flex: 1; height: 1px; background: var(--line); }
 
 /* TASK CARDS */
-.task-list { display: flex; flex-direction: column; gap: 6px; }
+.task-list { display: flex; flex-direction: column; gap: 8px; }
 .task {
-  background: var(--surface); border: 1px solid var(--line);
-  border-radius: 10px; padding: 14px 16px;
-  cursor: pointer; transition: all .15s;
+  background: var(--surface);
+  border-radius: 12px; padding: 16px 18px 16px 16px;
+  cursor: pointer;
   display: flex; align-items: center; gap: 14px;
+  position: relative; overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0,0,0,.06);
 }
-.task:hover { border-color: rgba(61,59,255,.3); box-shadow: 0 4px 16px rgba(61,59,255,.06); transform: translateX(2px); }
-.task-icon {
-  width: 38px; height: 38px; border-radius: 8px;
-  background: var(--bg); border: 1px solid var(--line);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 16px; flex-shrink: 0;
-}
+.task-bar { position: absolute; left: 0; top: 0; bottom: 0; width: 4px; }
 .task-body { flex: 1; min-width: 0; }
-.task-name { font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700; color: var(--ink); margin-bottom: 5px; }
-.task-meta { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.task-name { font-size: 15px; font-weight: 700; color: var(--ink); margin-bottom: 4px; }
+.task-path { font-family: 'Consolas', 'SF Mono', monospace; font-size: 10px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 420px; }
+.task-tags { display: flex; gap: 5px; margin-top: 8px; }
 .task-qb {
-  font-family: 'DM Mono', monospace; font-size: 9px; font-weight: 500;
+  font-family: 'Consolas', 'SF Mono', monospace; font-size: 9px; font-weight: 600;
   padding: 2px 8px; border-radius: 4px;
   background: var(--bg); color: var(--muted); border: 1px solid var(--line); flex-shrink: 0;
 }
-.task-path { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 300px; }
-.task-tags { display: flex; gap: 4px; margin-top: 5px; }
-.tag { font-family: 'DM Mono', monospace; font-size: 9px; font-weight: 500; padding: 2px 8px; border-radius: 3px; }
+.tag { font-size: 10px; font-weight: 600; padding: 3px 10px; border-radius: 20px; }
 .tag.spec { background: var(--tag-spec); color: var(--tag-spec-t); }
 .tag.ux   { background: var(--tag-ux);   color: var(--tag-ux-t); }
 .tag.dev  { background: var(--tag-dev);  color: var(--tag-dev-t); }
 .tag.qa   { background: var(--tag-qa);   color: var(--tag-qa-t); }
-.task-arrow { font-size: 18px; color: var(--line); flex-shrink: 0; transition: all .15s; }
-.task:hover .task-arrow { color: var(--accent); transform: translateX(2px); }
+.task-arrow { font-size: 22px; font-weight: 200; flex-shrink: 0; opacity: .3; }
 
 /* Q VIEW HEADER */
 .q-view-hdr {
-  background: var(--surface); border: 1px solid var(--line);
-  border-radius: 12px; padding: 20px 24px;
+  border-radius: 12px; padding: 22px 28px;
   margin-bottom: 20px; display: flex; align-items: center; gap: 20px;
+  position: relative; overflow: hidden;
 }
-.q-view-badge { font-family: 'Syne', sans-serif; font-size: 32px; font-weight: 800; color: var(--accent); line-height: 1; }
-.q-view-info-label { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); margin-bottom: 3px; }
-.q-view-info-val { font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700; color: var(--ink); }
+.q-view-hdr::after {
+  content: attr(data-q);
+  position: absolute; right: 20px; top: 50%; transform: translateY(-50%);
+  font-size: 80px; font-weight: 900; opacity: .06; line-height: 1;
+  pointer-events: none; letter-spacing: -3px;
+}
+.q-view-badge { font-size: 36px; font-weight: 900; line-height: 1; }
+.q-view-info-label { font-family: 'Consolas', 'SF Mono', monospace; font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 4px; opacity: .7; }
+.q-view-info-val { font-size: 15px; font-weight: 700; }
 
 .empty-state { text-align: center; padding: 60px 20px; color: var(--muted); }
 .empty-state-icon { font-size: 28px; opacity: .4; margin-bottom: 10px; }
@@ -318,12 +312,19 @@ body {
 
 <script>
 const QS = ['Q1','Q2','Q3','Q4','Q5','Q6','Q7','Q8','Q9','Q10','Q11','Q12'];
+const QCOLORS = {
+  Q1:  '#00b87a', Q2:  '#3d3bff', Q3:  '#ff8c3b', Q4:  '#ff3b7a',
+  Q5:  '#8b5cf6', Q6:  '#06b6d4', Q7:  '#ef4444', Q8:  '#f59e0b',
+  Q9:  '#14b8a6', Q10: '#6366f1', Q11: '#f43f5e', Q12: '#84cc16'
+};
 let DATA = {}, state = { year: null, q: null, search: '' };
 const collapsed = {};
+const DEFINED_QS = {}; // quarters explicitly khai báo trong manifest
 
 function initData(raw) {
   for (const yr of Object.keys(raw)) {
     DATA[yr] = {};
+    DEFINED_QS[yr] = new Set();
     for (const q of QS) DATA[yr][q] = [];
     const yrData = raw[yr];
     if (Array.isArray(yrData)) {
@@ -331,10 +332,12 @@ function initData(raw) {
         const q = item.q || 'Q1';
         if (!DATA[yr][q]) DATA[yr][q] = [];
         DATA[yr][q].push(item);
+        DEFINED_QS[yr].add(q);
       }
     } else if (typeof yrData === 'object') {
       for (const q of Object.keys(yrData)) {
         DATA[yr][q] = Array.isArray(yrData[q]) ? yrData[q] : [];
+        DEFINED_QS[yr].add(q);
       }
     }
   }
@@ -447,12 +450,14 @@ function renderHome(el) {
         </div>
         <div class="q-grid">`;
       for (const q of QS) {
+        if (!DEFINED_QS[yr] || !DEFINED_QS[yr].has(q)) continue;
         const n = (DATA[yr][q]||[]).length;
-        if (!n) continue;
-        h += `<div class="q-card" onclick="selectQ('${yr}','${q}')">
-          <div class="q-card-accent"></div>
-          <div class="q-card-label">${q}</div>
-          <div class="q-card-n">${n}</div>
+        const c = QCOLORS[q] || '#3d3bff';
+        const empty = n === 0;
+        h += `<div class="q-card${empty?' empty':''}" ${!empty?`onclick="selectQ('${yr}','${q}')"`:''} style="border-color:${c}40">
+          <div class="q-card-accent" style="background:${c}"></div>
+          <div class="q-card-label" style="color:${c}">${q}</div>
+          <div class="q-card-n" style="color:${c}">${n}</div>
           <div class="q-card-sub">spec${n!==1?'s':''}</div>
         </div>`;
       }
@@ -467,6 +472,7 @@ function renderQ(el) {
   const s = state.search.trim().toLowerCase();
   const found = s ? items.filter(t => t.name.toLowerCase().includes(s)) : items;
 
+  const c = QCOLORS[state.q] || '#3d3bff';
   let h = `<div class="bc">
     <span class="bc-a" onclick="goHome()">Home</span>
     <span class="bc-sep">/</span>
@@ -474,39 +480,35 @@ function renderQ(el) {
     <span class="bc-sep">/</span>
     <span>${state.q}</span>
   </div>
-  <div class="q-view-hdr">
+  <div class="q-view-hdr" data-q="${state.q}" style="background:${c}12;border:1px solid ${c}30;color:${c}">
     <div class="q-view-badge">${state.q}</div>
     <div>
       <div class="q-view-info-label">${state.year}</div>
       <div class="q-view-info-val">${items.length} spec document${items.length!==1?'s':''}</div>
     </div>
   </div>
-  <div class="search-wrap">
-    <span class="search-ico">🔍</span>
-    <input type="text" placeholder="Lọc trong ${state.q}..." value="${esc(state.search)}"
-      oninput="state.search=this.value;render()">
-  </div>`;
+`;
 
-  if (!s) h += `<div class="sec-hdr">Spec Documents</div>`;
-  h += found.length ? taskList(found) : `<div class="empty-state"><div class="empty-state-icon">📭</div><p>Không có kết quả</p></div>`;
+  h += `<div class="sec-hdr">Spec Documents</div>`;
+  h += found.length ? taskList(found, false, c) : `<div class="empty-state"><div class="empty-state-icon">📭</div><p>Không có kết quả</p></div>`;
   el.innerHTML = h;
 }
 
-function taskList(ts, showQ=false) {
+function taskList(ts, showQ=false, qColor='#3d3bff') {
   if (!ts.length) return `<div class="empty-state"><div class="empty-state-icon">📭</div><p>Chưa có spec nào</p></div>`;
-  return `<div class="task-list">${ts.map(t=>`
-    <div class="task" onclick="window.open('${t.file}','_self')">
-      <div class="task-icon">${tIcon(t.tags||[])}</div>
+  return `<div class="task-list">${ts.map(t=>{
+    const c = showQ ? (QCOLORS[t.q] || '#3d3bff') : qColor;
+    return `
+    <div class="task" onclick="window.open('${t.file}','_self')" style="border:1px solid ${c}30">
+      <div class="task-bar" style="background:${c}"></div>
       <div class="task-body">
         <div class="task-name">${t.name}</div>
-        <div class="task-meta">
-          ${showQ?`<span class="task-qb">${t.yr} · ${t.q}</span>`:''}
-          <span class="task-path">${t.file}</span>
-        </div>
-        ${(t.tags||[]).length?`<div class="task-tags">${t.tags.map(g=>`<span class="tag ${g}">${g}</span>`).join('')}</div>`:''}
+        <div class="task-path">${t.file}</div>
+        ${(t.tags||[]).length?`<div class="task-tags">${showQ?`<span class="task-qb" style="color:${c};background:${c}12;border-color:${c}30">${t.yr} · ${t.q}</span>`:''} ${t.tags.map(g=>`<span class="tag ${g}">${g}</span>`).join('')}</div>`:''}
       </div>
-      <div class="task-arrow">›</div>
-    </div>`).join('')}</div>`;
+      <div class="task-arrow" style="color:${c}">›</div>
+    </div>`;
+  }).join('')}</div>`;
 }
 
 function goHome()      { state={year:null,q:null,search:''}; render(); }
