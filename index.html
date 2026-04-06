@@ -311,17 +311,15 @@ body {
   .bell-btn, .install-toast { display: none !important; }
 }
 .bell-btn {
-  position: fixed; bottom: 72px; right: 16px;
-  width: 44px; height: 44px;
-  background: var(--accent); color: #fff;
-  border: none; border-radius: 50%;
-  font-size: 20px;
+  width: 34px; height: 34px;
+  background: var(--accent);
+  border: none; border-radius: 8px;
+  font-size: 16px;
   display: flex; align-items: center; justify-content: center;
   cursor: pointer; z-index: 300;
-  box-shadow: 0 4px 20px rgba(61,59,255,.45);
 }
 .install-toast {
-  position: fixed; bottom: 126px; right: 16px;
+  position: fixed; top: 58px; right: 16px;
   background: var(--surface);
   border: 1px solid var(--line);
   border-radius: 14px;
@@ -348,7 +346,10 @@ body {
     <div class="hdr-logo">A</div>
     <span class="hdr-name">Arena <span>/ Feature Docs</span></span>
   </div>
-  <span class="hdr-badge">Spec Portal</span>
+  <div style="display:flex;align-items:center;gap:8px">
+    <span class="hdr-badge">Spec Portal</span>
+    <button class="bell-btn" id="bell-btn" style="display:none" onclick="toggleToast()">🔔</button>
+  </div>
 </header>
 
 <div class="install-toast" id="install-toast">
@@ -356,7 +357,6 @@ body {
   <div class="install-toast-sub">Cài về máy để dùng offline, nhanh hơn trình duyệt.</div>
   <button class="install-toast-btn" onclick="installApp()">Cài ngay</button>
 </div>
-<button class="bell-btn" id="bell-btn" style="display:none" onclick="toggleToast()">🔔</button>
 
 
 <div class="layout">

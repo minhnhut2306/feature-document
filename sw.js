@@ -1,4 +1,4 @@
-const CACHE = 'arena-docs-v1';
+const CACHE = 'arena-docs-v2';
 const SHELL = [
   './index.html',
   './app.webmanifest',
