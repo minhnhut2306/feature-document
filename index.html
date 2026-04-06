@@ -7,113 +7,226 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#0d1117;--surface:#161b22;--surface2:#21262d;
-  --border:#30363d;--border2:#444c56;
-  --text:#e6edf3;--text2:#848d97;--text3:#c9d1d9;
-  --blue:#58a6ff;--blue-bg:rgba(88,166,255,.1);--blue-b:rgba(88,166,255,.2);
-  --green:#3fb950;--green-bg:rgba(63,185,80,.1);--green-b:rgba(63,185,80,.2);
-  --orange:#d29922;--orange-bg:rgba(210,153,34,.1);
-  --purple:#bc8cff;--purple-bg:rgba(188,140,255,.1);
-  --r:10px;
+  --bg:#0b0f17;
+  --surface:#111622;
+  --surface2:#1a2133;
+  --surface3:#202840;
+  --border:#1e2a3d;
+  --border2:#2a3a55;
+  --text:#dde6f5;--text2:#6b7fa0;--text3:#a0b4d0;
+  --blue:#4d9fff;--blue-bg:rgba(77,159,255,.08);--blue-b:rgba(77,159,255,.18);
+  --green:#34d67a;--green-bg:rgba(52,214,122,.08);--green-b:rgba(52,214,122,.18);
+  --orange:#f0a041;--orange-bg:rgba(240,160,65,.08);--orange-b:rgba(240,160,65,.18);
+  --purple:#a78bfa;--purple-bg:rgba(167,139,250,.08);--purple-b:rgba(167,139,250,.18);
+  --red:#f87171;--red-bg:rgba(248,113,113,.08);
+  --r:12px;--r2:8px;
 }
 body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;min-height:100vh}
 
-/* Header */
-.hdr{background:var(--surface);border-bottom:1px solid var(--border);padding:0 32px;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
-.hdr-brand{display:flex;align-items:center;gap:10px;font-size:15px;font-weight:700;color:var(--text)}
-.hdr-brand .dot{width:8px;height:8px;background:var(--green);border-radius:50%;box-shadow:0 0 0 3px var(--green-bg)}
-.hdr-tag{font-size:11px;color:var(--text2);background:var(--surface2);border:1px solid var(--border);padding:2px 8px;border-radius:20px}
+/* HEADER */
+.hdr{
+  background:rgba(11,15,23,.9);
+  backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--border);
+  padding:0 28px;height:52px;
+  display:flex;align-items:center;justify-content:space-between;
+  position:sticky;top:0;z-index:200;
+}
+.hdr-brand{display:flex;align-items:center;gap:10px}
+.hdr-logo{
+  width:28px;height:28px;border-radius:7px;
+  background:linear-gradient(135deg,#2563eb,#7c3aed);
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;font-weight:800;color:#fff;
+  flex-shrink:0;
+}
+.hdr-name{font-size:14px;font-weight:700;color:var(--text);letter-spacing:-.2px}
+.hdr-name span{color:var(--text2);font-weight:400}
+.hdr-pill{
+  font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;
+  color:var(--green);background:var(--green-bg);
+  border:1px solid var(--green-b);padding:3px 10px;border-radius:20px;
+}
 
-/* Layout */
-.layout{display:flex;min-height:calc(100vh - 56px)}
+/* LAYOUT */
+.layout{display:flex;min-height:calc(100vh - 52px)}
 
-/* Sidebar */
-.sidebar{width:220px;flex-shrink:0;background:var(--surface);border-right:1px solid var(--border);padding:16px 0;position:sticky;top:56px;height:calc(100vh - 56px);overflow-y:auto}
-.sb-section{padding:6px 16px;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;color:var(--text2);margin-top:8px}
-.sb-item{display:flex;align-items:center;gap:8px;padding:6px 16px;font-size:13px;color:var(--text2);cursor:pointer;transition:.15s;border-left:2px solid transparent}
+/* SIDEBAR */
+.sidebar{
+  width:210px;flex-shrink:0;
+  background:var(--surface);
+  border-right:1px solid var(--border);
+  padding:16px 0 60px;
+  position:sticky;top:52px;
+  height:calc(100vh - 52px);
+  overflow-y:auto;
+}
+.sb-label{
+  padding:16px 16px 5px;
+  font-size:9px;font-weight:700;
+  text-transform:uppercase;letter-spacing:2px;
+  color:var(--text2);
+}
+.sb-label:first-child{padding-top:4px}
+.sb-item{
+  display:flex;align-items:center;gap:8px;
+  padding:7px 16px;font-size:13px;
+  color:var(--text2);cursor:pointer;
+  transition:.15s;border-left:2px solid transparent;
+}
 .sb-item:hover{color:var(--text3);background:var(--surface2)}
-.sb-item.active{color:var(--blue);border-left-color:var(--blue);background:var(--blue-bg)}
-.sb-item .sb-icon{font-size:13px;width:16px;text-align:center;flex-shrink:0}
-.sb-sub{padding-left:40px;font-size:12px;color:var(--text2);cursor:pointer;padding-top:4px;padding-bottom:4px;transition:.15s;border-left:2px solid transparent}
-.sb-sub:hover{color:var(--text3)}
-.sb-sub.active{color:var(--blue);border-left-color:var(--blue)}
-.sb-divider{margin:8px 16px;border:none;border-top:1px solid var(--border)}
+.sb-item.on{color:var(--blue);border-left-color:var(--blue);background:var(--blue-bg);font-weight:600}
+.sb-dot{width:5px;height:5px;border-radius:50%;background:currentColor;flex-shrink:0;opacity:.5}
+.sb-item.on .sb-dot{opacity:1}
+.sb-count{
+  margin-left:auto;font-size:10px;font-weight:600;
+  background:var(--surface3);color:var(--text2);
+  padding:1px 7px;border-radius:10px;
+}
+.sb-item.on .sb-count{background:var(--blue-bg);color:var(--blue)}
+.sb-hr{border:none;border-top:1px solid var(--border);margin:10px 0}
 
-/* Main */
-.main{flex:1;padding:32px;overflow-x:hidden}
+/* MAIN */
+.main{flex:1;padding:40px 44px 80px;overflow-x:hidden;max-width:860px}
 
-/* Breadcrumb */
-.bc{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text2);margin-bottom:24px}
-.bc a{color:var(--blue);cursor:pointer;text-decoration:none}
-.bc a:hover{text-decoration:underline}
+/* BREADCRUMB */
+.bc{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text2);margin-bottom:18px}
+.bc-a{color:var(--blue);cursor:pointer}
+.bc-a:hover{text-decoration:underline}
 .bc-sep{color:var(--border2)}
 
-/* Page title */
-.pg-title{font-size:22px;font-weight:700;color:var(--text);margin-bottom:6px}
-.pg-sub{font-size:14px;color:var(--text2);margin-bottom:28px}
+/* PAGE HEADER */
+.pg-hdr{margin-bottom:26px}
+.pg-title{font-size:19px;font-weight:700;color:var(--text);letter-spacing:-.3px;margin-bottom:4px}
+.pg-sub{font-size:13px;color:var(--text2)}
 
-/* Stats row */
-.stats{display:flex;gap:12px;margin-bottom:28px;flex-wrap:wrap}
-.stat{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px 16px;display:flex;align-items:center;gap:10px}
-.stat .sn{font-size:20px;font-weight:700;color:var(--text)}
-.stat .sl{font-size:11px;color:var(--text2);margin-top:1px}
-
-/* Year/Quarter grid */
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px}
-.gcard{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:20px;cursor:pointer;transition:.2s;text-align:center;position:relative;overflow:hidden}
-.gcard:hover{border-color:var(--border2);background:var(--surface2);transform:translateY(-2px)}
-.gcard .gc-icon{font-size:28px;margin-bottom:10px}
-.gcard .gc-title{font-size:14px;font-weight:700;color:var(--text);margin-bottom:3px}
-.gcard .gc-sub{font-size:11px;color:var(--text2)}
-.gcard .gc-badge{position:absolute;top:10px;right:10px;font-size:10px;font-weight:600;padding:2px 7px;border-radius:20px;background:var(--green-bg);border:1px solid var(--green-b);color:var(--green)}
-
-/* Task list */
-.task-list{display:flex;flex-direction:column;gap:8px}
-.task{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px 18px;cursor:pointer;transition:.2s;display:flex;align-items:center;gap:14px}
-.task:hover{border-color:var(--blue-b);background:var(--blue-bg);transform:translateX(3px)}
-.task-icon{width:36px;height:36px;border-radius:8px;background:var(--surface2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
-.task-info{flex:1;min-width:0}
-.task-name{font-size:14px;font-weight:600;color:var(--text);margin-bottom:2px}
-.task-path{font-size:11px;color:var(--text2);font-family:monospace;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.task-arrow{color:var(--text2);font-size:16px;transition:.15s}
-.task:hover .task-arrow{color:var(--blue);transform:translateX(3px)}
-.task-tags{display:flex;gap:5px;margin-top:5px;flex-wrap:wrap}
-.tag{font-size:10px;padding:1px 7px;border-radius:20px;font-weight:600}
-.tag.spec{background:var(--blue-bg);border:1px solid var(--blue-b);color:var(--blue)}
-.tag.ux{background:var(--purple-bg);border:1px solid rgba(188,140,255,.2);color:var(--purple)}
-.tag.dev{background:var(--green-bg);border:1px solid var(--green-b);color:var(--green)}
-.tag.qa{background:var(--orange-bg);border:1px solid rgba(210,153,34,.2);color:var(--orange)}
-
-/* Q badge colors */
-.q1{border-color:rgba(63,185,80,.3)!important;color:var(--green)!important}
-.q2{border-color:rgba(88,166,255,.3)!important;color:var(--blue)!important}
-.q3{border-color:rgba(210,153,34,.3)!important;color:var(--orange)!important}
-.q4{border-color:rgba(188,140,255,.3)!important;color:var(--purple)!important}
-
-/* Empty */
-.empty{text-align:center;padding:60px 20px;color:var(--text2)}
-.empty .ei{font-size:40px;margin-bottom:12px}
-.empty p{font-size:14px}
-
-/* Search */
-.search-wrap{position:relative;margin-bottom:20px}
-.search-wrap input{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:9px 14px 9px 36px;font-size:13px;color:var(--text);outline:none;transition:.2s}
-.search-wrap input:focus{border-color:var(--blue-b)}
+/* SEARCH */
+.search-wrap{position:relative;margin-bottom:24px}
+.search-wrap input{
+  width:100%;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--r2);
+  padding:9px 14px 9px 38px;
+  font-size:13px;color:var(--text);
+  outline:none;transition:.15s;
+}
+.search-wrap input:focus{border-color:var(--blue-b);background:var(--surface2)}
 .search-wrap input::placeholder{color:var(--text2)}
-.search-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text2);font-size:14px;pointer-events:none}
+.s-ico{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text2);font-size:13px;pointer-events:none}
 
-/* Loading */
-.loading{display:flex;align-items:center;gap:8px;color:var(--text2);font-size:13px;padding:20px 0}
-.spinner{width:14px;height:14px;border:2px solid var(--border);border-top-color:var(--blue);border-radius:50%;animation:spin .8s linear infinite}
+/* YEAR DIVIDER */
+.yr-div{
+  font-size:10px;font-weight:700;
+  text-transform:uppercase;letter-spacing:1.8px;
+  color:var(--text2);
+  display:flex;align-items:center;gap:10px;
+  margin-bottom:12px;
+}
+.yr-div::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* QUARTER GRID */
+.qgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:10px;margin-bottom:32px}
+.qcard{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--r);
+  padding:18px 16px 16px;
+  cursor:pointer;transition:.2s;
+  position:relative;overflow:hidden;
+}
+.qcard:hover{border-color:var(--border2);background:var(--surface2);transform:translateY(-3px)}
+.qcard-stripe{
+  position:absolute;top:0;left:0;right:0;height:3px;
+  transition:.2s;opacity:.6;
+}
+.qcard:hover .qcard-stripe{opacity:1}
+.qcard.q1 .qcard-stripe{background:linear-gradient(90deg,#34d67a,#22c55e)}
+.qcard.q2 .qcard-stripe{background:linear-gradient(90deg,#4d9fff,#818cf8)}
+.qcard.q3 .qcard-stripe{background:linear-gradient(90deg,#f0a041,#fb923c)}
+.qcard.q4 .qcard-stripe{background:linear-gradient(90deg,#a78bfa,#ec4899)}
+.qcard-yr{
+  position:absolute;top:14px;right:12px;
+  font-size:9px;font-weight:700;letter-spacing:.5px;
+  color:var(--text2);background:var(--surface3);
+  padding:2px 7px;border-radius:10px;
+}
+.qcard-tag{
+  font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;
+  margin-bottom:10px;padding-top:4px;
+}
+.qcard.q1 .qcard-tag{color:var(--green)}
+.qcard.q2 .qcard-tag{color:var(--blue)}
+.qcard.q3 .qcard-tag{color:var(--orange)}
+.qcard.q4 .qcard-tag{color:var(--purple)}
+.qcard-n{font-size:28px;font-weight:800;color:var(--text);line-height:1;margin-bottom:2px}
+.qcard-lbl{font-size:11px;color:var(--text2)}
+
+/* TASK LIST */
+.task-list{display:flex;flex-direction:column;gap:6px}
+.task{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--r);
+  padding:14px 16px;
+  cursor:pointer;transition:.18s;
+  display:flex;align-items:center;gap:14px;
+  position:relative;overflow:hidden;
+}
+.task-bar{
+  position:absolute;left:0;top:0;bottom:0;width:3px;
+  background:var(--blue);
+  transform:scaleY(0);transition:.18s;
+  transform-origin:center;border-radius:3px 0 0 3px;
+}
+.task:hover{border-color:var(--border2);background:var(--surface2)}
+.task:hover .task-bar{transform:scaleY(1)}
+.task-ic{
+  width:38px;height:38px;border-radius:9px;
+  background:var(--surface2);border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;flex-shrink:0;transition:.18s;
+}
+.task:hover .task-ic{background:var(--surface3);border-color:var(--border2)}
+.task-body{flex:1;min-width:0}
+.task-name{font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px}
+.task-meta{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.task-path{
+  font-size:11px;color:var(--text2);
+  font-family:'SFMono-Regular',Consolas,monospace;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  max-width:340px;
+}
+.task-qb{
+  font-size:10px;font-weight:700;padding:1px 8px;border-radius:10px;flex-shrink:0;
+}
+.task-qb.q1{background:var(--green-bg);color:var(--green)}
+.task-qb.q2{background:var(--blue-bg);color:var(--blue)}
+.task-qb.q3{background:var(--orange-bg);color:var(--orange)}
+.task-qb.q4{background:var(--purple-bg);color:var(--purple)}
+.task-tags{display:flex;gap:4px;margin-top:6px}
+.tag{font-size:10px;font-weight:600;padding:1px 8px;border-radius:10px}
+.tag.spec{background:var(--blue-bg);border:1px solid var(--blue-b);color:var(--blue)}
+.tag.ux{background:var(--purple-bg);border:1px solid var(--purple-b);color:var(--purple)}
+.tag.dev{background:var(--green-bg);border:1px solid var(--green-b);color:var(--green)}
+.tag.qa{background:var(--orange-bg);border:1px solid var(--orange-b);color:var(--orange)}
+.task-arrow{color:var(--text2);font-size:18px;transition:.18s;flex-shrink:0;opacity:.3}
+.task:hover .task-arrow{color:var(--blue);opacity:1;transform:translateX(3px)}
+
+/* EMPTY */
+.empty{text-align:center;padding:64px 20px;color:var(--text2)}
+.empty-icon{font-size:32px;margin-bottom:12px;opacity:.3}
+.empty p{font-size:13px}
+
+/* SPINNER */
 @keyframes spin{to{transform:rotate(360deg)}}
-
-/* Error banner */
-.notice{background:var(--orange-bg);border:1px solid rgba(210,153,34,.25);border-radius:8px;padding:10px 14px;font-size:12px;color:var(--orange);margin-bottom:16px;line-height:1.6}
+.spin{width:14px;height:14px;border:2px solid var(--border);border-top-color:var(--blue);border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0}
 
 @media(max-width:768px){
   .sidebar{display:none}
-  .main{padding:20px 16px}
-  .grid{grid-template-columns:repeat(auto-fill,minmax(140px,1fr))}
+  .main{padding:20px 18px 60px}
+  .qgrid{grid-template-columns:repeat(2,1fr)}
 }
 </style>
 </head>
@@ -121,218 +234,155 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 
 <header class="hdr">
   <div class="hdr-brand">
-    <div class="dot"></div>
-    Arena — Feature Docs
+    <div class="hdr-logo">A</div>
+    <span class="hdr-name">Arena <span>/ Feature Docs</span></span>
   </div>
-  <span class="hdr-tag">Spec Portal</span>
+  <span class="hdr-pill">Spec Portal</span>
 </header>
 
 <div class="layout">
-  <nav class="sidebar" id="sidebar">
-    <div class="sb-section">Navigator</div>
-    <div class="sb-item active" id="sb-home" onclick="goHome()">
-      <span class="sb-icon">⊞</span> Tất cả
+  <nav class="sidebar">
+    <div class="sb-label">Menu</div>
+    <div class="sb-item on" id="sb-home" onclick="goHome()">
+      <span class="sb-dot"></span>
+      Tất cả
     </div>
-    <hr class="sb-divider">
+    <hr class="sb-hr">
     <div id="sb-tree"></div>
   </nav>
-
-  <main class="main" id="main"></main>
+  <main class="main" id="main">
+    <div style="display:flex;align-items:center;gap:10px;color:var(--text2);padding:40px 0;font-size:13px">
+      <div class="spin"></div>Đang tải...
+    </div>
+  </main>
 </div>
 
 <script>
-let DATA = {};
-let state = { year: null, q: null, search: "" };
+let DATA={}, state={year:null,q:null,search:""};
+const QC={Q1:"q1",Q2:"q2",Q3:"q3",Q4:"q4"};
+const qc=q=>QC[q]||"q2";
+const esc=s=>String(s).replace(/"/g,"&quot;");
+function tIcon(t=[]){return t.includes("ux")?"🎨":t.includes("dev")?"⚙️":t.includes("qa")?"🧪":"📄"}
 
-const ICONS = { year:"📅", q:"🗂️", spec:"📄", ux:"🎨", dev:"⚙️", qa:"🧪" };
-const TAG_ICONS = { spec:"📄", ux:"🎨", dev:"⚙️", qa:"🧪" };
-
-function taskIcon(tags=[]) {
-  if(tags.includes("ux")) return "🎨";
-  if(tags.includes("dev")) return "⚙️";
-  if(tags.includes("qa")) return "🧪";
-  return "📄";
-}
-
-function qClass(q) {
-  return {Q1:"q1",Q2:"q2",Q3:"q3",Q4:"q4"}[q]||"";
-}
-
-/* ────────────────────────────────────────────────
-   SIDEBAR
-   ──────────────────────────────────────────────── */
-function buildSidebar() {
-  const el = document.getElementById("sb-tree");
-  let html = "";
-  for(const yr of Object.keys(DATA).sort().reverse()) {
-    html += `<div class="sb-section">${yr}</div>`;
-    for(const q of Object.keys(DATA[yr]).sort()) {
-      const count = DATA[yr][q].length;
-      const active = state.year===yr && state.q===q;
-      html += `<div class="sb-item${active?" active":""}" onclick="selectQ('${yr}','${q}')">
-        <span class="sb-icon">🗂️</span>
+function sidebar(){
+  let h="";
+  for(const yr of Object.keys(DATA).sort().reverse()){
+    h+=`<div class="sb-label">${yr}</div>`;
+    for(const q of Object.keys(DATA[yr]).sort()){
+      const n=DATA[yr][q].length, on=state.year===yr&&state.q===q;
+      h+=`<div class="sb-item${on?" on":""}" onclick="selectQ('${yr}','${q}')">
+        <span class="sb-dot"></span>
         <span style="flex:1">${q}</span>
-        <span style="font-size:10px;color:var(--text2)">${count}</span>
+        <span class="sb-count">${n}</span>
       </div>`;
     }
   }
-  el.innerHTML = html;
-  document.getElementById("sb-home").className = "sb-item" + ((!state.year&&!state.q)?" active":"");
+  document.getElementById("sb-tree").innerHTML=h;
+  document.getElementById("sb-home").className="sb-item"+((!state.year&&!state.q)?" on":"");
 }
 
-/* ────────────────────────────────────────────────
-   RENDER
-   ──────────────────────────────────────────────── */
-function render() {
-  buildSidebar();
-  const el = document.getElementById("main");
+function render(){
+  sidebar();
+  const el=document.getElementById("main");
 
-  // COUNT helpers
+  if(!state.year&&!state.q){
+    const years=Object.keys(DATA).sort().reverse();
+    const all=years.flatMap(yr=>Object.entries(DATA[yr]).flatMap(([q,ts])=>ts.map(t=>({...t,yr,q}))));
+    const s=state.search.trim().toLowerCase();
+    const found=s?all.filter(t=>t.name.toLowerCase().includes(s)):null;
 
-
-  if(!state.year && !state.q) {
-    // HOME
-    const years = Object.keys(DATA).sort().reverse();
-    const allTasks = years.flatMap(yr=>
-      Object.entries(DATA[yr]).flatMap(([q,tasks])=>tasks.map(t=>({...t,yr,q})))
-    );
-    const filtered = state.search
-      ? allTasks.filter(t=>t.name.toLowerCase().includes(state.search.toLowerCase()))
-      : null;
-
-    let html = `
-      <div class="pg-title">📋 Feature Documents</div>
-      <div class="pg-sub">Tổng hợp spec & tài liệu kỹ thuật dự án Arena</div>
-
+    let h=`
+      <div class="pg-hdr">
+        <div class="pg-title">Feature Documents</div>
+        <div class="pg-sub">Spec & tài liệu kỹ thuật dự án Arena</div>
+      </div>
       <div class="search-wrap">
-        <span class="search-icon">🔍</span>
-        <input type="text" placeholder="Tìm kiếm spec..." value="${state.search}"
-          oninput="state.search=this.value;render()" />
+        <span class="s-ico">⌕</span>
+        <input type="text" placeholder="Tìm kiếm spec..." value="${esc(state.search)}"
+          oninput="state.search=this.value;render()">
       </div>`;
 
-    if(filtered) {
-      html += `<div class="pg-sub" style="margin-bottom:14px">Kết quả: <b style="color:var(--text)">${filtered.length}</b> spec</div>`;
-      html += renderTaskList(filtered, true);
+    if(found){
+      h+=`<div style="font-size:13px;color:var(--text2);margin-bottom:16px">
+        <b style="color:var(--text)">${found.length}</b> kết quả cho "<em>${esc(s)}</em>"
+      </div>${taskList(found,true)}`;
     } else {
-      for(const yr of years) {
-        html += `<div class="sb-section" style="margin-top:0;margin-bottom:12px">${yr}</div>`;
-        html += `<div class="grid" style="margin-bottom:24px">`;
-        for(const q of Object.keys(DATA[yr]).sort()) {
-          const count = DATA[yr][q].length;
-          html += `<div class="gcard" onclick="selectQ('${yr}','${q}')">
-            <div class="gc-icon">🗂️</div>
-            <div class="gc-title">${q}</div>
-            <div class="gc-sub">${count} spec${count!==1?"s":""}</div>
-            <span class="gc-badge ${qClass(q)}" style="position:absolute;top:10px;right:10px">${yr}</span>
+      for(const yr of years){
+        h+=`<div class="yr-div">${yr}</div><div class="qgrid">`;
+        for(const q of Object.keys(DATA[yr]).sort()){
+          const n=DATA[yr][q].length;
+          h+=`<div class="qcard ${qc(q)}" onclick="selectQ('${yr}','${q}')">
+            <div class="qcard-stripe"></div>
+            <div class="qcard-yr">${yr}</div>
+            <div class="qcard-tag">${q}</div>
+            <div class="qcard-n">${n}</div>
+            <div class="qcard-lbl">spec file${n!==1?"s":""}</div>
           </div>`;
         }
-        html += `</div>`;
+        h+=`</div>`;
       }
     }
+    el.innerHTML=h;
 
-    el.innerHTML = html;
+  } else if(state.year&&state.q){
+    const ts=DATA[state.year][state.q]||[];
+    const s=state.search.trim().toLowerCase();
+    const found=s?ts.filter(t=>t.name.toLowerCase().includes(s)):ts;
 
-  } else if(state.year && !state.q) {
-    // YEAR VIEW
-    const yr = state.year;
-    const quarters = Object.keys(DATA[yr]).sort();
-    el.innerHTML = `
-      ${renderBC([{label:"Home",fn:"goHome()"}], yr)}
-      <div class="pg-title">${yr}</div>
-      <div class="pg-sub">Chọn quý để xem spec</div>
-      <div class="grid">${quarters.map(q=>{
-        const count = DATA[yr][q].length;
-        return `<div class="gcard" onclick="selectQ('${yr}','${q}')">
-          <div class="gc-icon">🗂️</div>
-          <div class="gc-title">${q}</div>
-          <div class="gc-sub">${count} spec</div>
-        </div>`;
-      }).join("")}</div>`;
-
-  } else {
-    // QUARTER VIEW
-    const tasks = DATA[state.year][state.q];
-    const filtered = state.search
-      ? tasks.filter(t=>t.name.toLowerCase().includes(state.search.toLowerCase()))
-      : tasks;
-
-    el.innerHTML = `
-      ${renderBC([{label:"Home",fn:"goHome()"},{label:state.year,fn:`selectYear('${state.year}')`}], state.q)}
-      <div class="pg-title">${state.year} · ${state.q}</div>
-      <div class="pg-sub">${tasks.length} spec document${tasks.length!==1?"s":""}</div>
-      <div class="search-wrap">
-        <span class="search-icon">🔍</span>
-        <input type="text" placeholder="Lọc spec trong quý này..." value="${state.search}"
-          oninput="state.search=this.value;render()" />
+    el.innerHTML=`
+      ${makeBc([{l:"Home",f:"goHome()"},{l:state.year,f:`selectYear('${state.year}')`}],state.q)}
+      <div class="pg-hdr">
+        <div class="pg-title">${state.year} · ${state.q}</div>
+        <div class="pg-sub">${ts.length} spec document${ts.length!==1?"s":""}</div>
       </div>
-      ${filtered.length===0
-        ? `<div class="empty"><div class="ei">📭</div><p>Không tìm thấy spec nào</p></div>`
-        : renderTaskList(filtered)}`;
+      <div class="search-wrap">
+        <span class="s-ico">⌕</span>
+        <input type="text" placeholder="Lọc trong ${state.q}..." value="${esc(state.search)}"
+          oninput="state.search=this.value;render()">
+      </div>
+      ${found.length?taskList(found):`<div class="empty"><div class="empty-icon">📭</div><p>Không có kết quả</p></div>`}`;
   }
 }
 
-function renderTaskList(tasks, showQuarter=false) {
-  if(!tasks.length) return `<div class="empty"><div class="ei">📭</div><p>Chưa có spec nào</p></div>`;
-  return `<div class="task-list">${tasks.map(t=>`
+function taskList(ts,showQ=false){
+  if(!ts.length) return `<div class="empty"><div class="empty-icon">📭</div><p>Chưa có spec nào</p></div>`;
+  return `<div class="task-list">${ts.map(t=>`
     <div class="task" onclick="window.open('${t.file}','_blank')">
-      <div class="task-icon">${taskIcon(t.tags||[])}</div>
-      <div class="task-info">
+      <div class="task-bar"></div>
+      <div class="task-ic">${tIcon(t.tags||[])}</div>
+      <div class="task-body">
         <div class="task-name">${t.name}</div>
-        ${showQuarter?`<div class="task-path" style="color:var(--blue);margin-bottom:2px">${t.yr} · ${t.q}</div>`:""}
-        <div class="task-path">${t.file}</div>
-        ${(t.tags||[]).length?`<div class="task-tags">${t.tags.map(tag=>`<span class="tag ${tag}">${tag}</span>`).join("")}</div>`:""}
+        <div class="task-meta">
+          ${showQ?`<span class="task-qb ${qc(t.q)}">${t.yr} · ${t.q}</span>`:""}
+          <span class="task-path">${t.file}</span>
+        </div>
+        ${(t.tags||[]).length?`<div class="task-tags">${t.tags.map(g=>`<span class="tag ${g}">${g}</span>`).join("")}</div>`:""}
       </div>
       <div class="task-arrow">›</div>
     </div>`).join("")}</div>`;
 }
 
-function renderBC(crumbs, current) {
-  let html = `<div class="bc">`;
-  for(const c of crumbs) {
-    html += `<a onclick="${c.fn}">${c.label}</a><span class="bc-sep">/</span>`;
-  }
-  html += `<span style="color:var(--text3)">${current}</span></div>`;
-  return html;
+function makeBc(cs,cur){
+  let h=`<div class="bc">`;
+  cs.forEach(c=>{h+=`<span class="bc-a" onclick="${c.f}">${c.l}</span><span class="bc-sep">/</span>`;});
+  return h+`<span style="color:var(--text3)">${cur}</span></div>`;
 }
 
-/* ────────────────────────────────────────────────
-   NAVIGATION
-   ──────────────────────────────────────────────── */
-function goHome()            { state={year:null,q:null,search:""}; render(); }
-function selectYear(yr)      { state={year:yr,q:null,search:""};   render(); }
-function selectQ(yr,q)       { state={year:yr,q,search:""};        render(); }
-
-// Load manifest.json rồi mới render
-document.getElementById("main").innerHTML =
-  `<div style="display:flex;align-items:center;gap:10px;color:var(--text2);padding:40px 0">
-    <div style="width:14px;height:14px;border:2px solid var(--border);border-top-color:var(--blue);border-radius:50%;animation:spin .8s linear infinite"></div>
-    Đang tải...
-  </div>`;
+function goHome()      {state={year:null,q:null,search:""};render()}
+function selectYear(y) {state={year:y,q:null,search:""};render()}
+function selectQ(y,q)  {state={year:y,q,search:""};render()}
 
 fetch("manifest.json")
-  .then(r => r.json())
-  .then(json => { DATA = json; render(); })
-  .catch(() => {
-    document.getElementById("main").innerHTML =
-      `<div style="background:var(--orange-bg);border:1px solid rgba(210,153,34,.25);border-radius:8px;padding:14px 18px;color:var(--orange);font-size:13px;margin-top:20px">
-        ⚠️ Không tải được <code>manifest.json</code>. Kiểm tra file có cùng thư mục với index.html không.
+  .then(r=>r.json())
+  .then(j=>{DATA=j;render()})
+  .catch(()=>{
+    document.getElementById("main").innerHTML=`
+      <div style="background:var(--red-bg);border:1px solid rgba(248,113,113,.2);border-radius:10px;padding:16px 20px;color:var(--red);font-size:13px;margin-top:10px;line-height:1.8">
+        ⚠️ Không tải được <code style="font-family:monospace;background:rgba(248,113,113,.1);padding:1px 6px;border-radius:4px">manifest.json</code><br>
+        <span style="color:var(--text2)">Kiểm tra file có cùng thư mục với index.html.</span>
       </div>`;
   });
 </script>
-
-<!--
-  ╔═══════════════════════════════════════════════════════════════╗
-  ║  ĐỂ THÊM SPEC MỚI: Chỉ sửa manifest.json — KHÔNG đụng file  ║
-  ║  index.html này nữa.                                          ║
-  ║                                                               ║
-  ║  Thêm 1 dòng vào đúng quý trong manifest.json:               ║
-  ║  { "name": "Tên feature",                                     ║
-  ║    "file": "2026/Q4/ten-file.html",                           ║
-  ║    "tags": ["spec","dev"] }                                   ║
-  ║                                                               ║
-  ║  Thêm quý mới: "Q4": [] trong năm tương ứng                  ║
-  ║  Thêm năm mới: "2027": { "Q1": [] }                          ║
-  ╚═══════════════════════════════════════════════════════════════╝
--->
+<!-- Chỉ sửa manifest.json để thêm spec mới. Không đụng file này. -->
 </body>
 </html>
