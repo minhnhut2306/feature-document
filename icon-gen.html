@@ -21,6 +21,13 @@ button:hover { background: #252525; color: #fff; }
 <h1>Chọn icon → tải 192 & 512</h1>
 <div class="grid" id="grid"></div>
 <script>
+const CLIP = `<defs><clipPath id="round"><rect width="512" height="512" rx="112" ry="112"/></clipPath></defs><g clip-path="url(#round)">`;
+const CLIP_END = `</g>`;
+
+function wrapClip(svg) {
+  return svg.replace('<svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">', `<svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">${CLIP}`).replace('</svg>', `${CLIP_END}</svg>`);
+}
+
 const icons = [
   {
     name: 'Billiard 8-Ball',
@@ -185,7 +192,7 @@ icons.forEach(ic => {
   [192,512].forEach(sz => {
     const btn = document.createElement('button');
     btn.textContent = sz+'px';
-    btn.onclick = () => svgToPng(ic.svg, sz, d => { const a=document.createElement('a'); a.download=`icon-${sz}.png`; a.href=d; a.click(); });
+    btn.onclick = () => svgToPng(wrapClip(ic.svg), sz, d => { const a=document.createElement('a'); a.download=`icon-${sz}.png`; a.href=d; a.click(); });
     btns.appendChild(btn);
   });
   card.append(preview, label, btns);
