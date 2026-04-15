@@ -132,6 +132,7 @@ body {
 .sb-q.active { color: var(--accent); background: #f0f0ff; border-left-color: var(--accent); font-weight: 500; }
 .sb-q.empty { opacity: .3; pointer-events: none; }
 .sb-q-count { margin-left: auto; font-size: 9px; }
+.sb-month { padding-left: 36px; font-size: 10px; opacity: .85; }
 
 /* MAIN */
 .main { flex: 1; padding: 32px 40px 80px; max-width: 900px; }
@@ -225,7 +226,25 @@ body {
 .q-card-n { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 28px; font-weight: 800; line-height: 1; letter-spacing: -1px; }
 .q-card-sub { font-size: 11px; color: var(--muted); margin-top: 3px; }
 
-/* SECTION HEADER */
+/* MONTH GRID */
+.month-grid { display: flex; flex-direction: column; gap: 10px; }
+.month-card {
+  background: var(--surface); border: 1px solid var(--line);
+  border-radius: 12px; padding: 18px 20px;
+  cursor: pointer; transition: all .15s;
+  position: relative; overflow: hidden;
+  display: flex; align-items: center; gap: 16px;
+  box-shadow: 0 1px 3px rgba(0,0,0,.06);
+}
+.month-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,.1); transform: translateY(-1px); }
+.month-card-accent { position: absolute; left: 0; top: 0; bottom: 0; width: 4px; }
+.month-card-icon { font-size: 22px; flex-shrink: 0; }
+.month-card-label { font-family: 'Consolas','SF Mono',monospace; font-size: 20px; font-weight: 800; letter-spacing: -0.5px; flex-shrink: 0; min-width: 48px; }
+.month-card-n { font-size: 28px; font-weight: 900; line-height: 1; letter-spacing: -1px; flex-shrink: 0; }
+.month-card-sub { font-size: 11px; color: var(--muted); flex: 1; }
+.month-card-arrow { font-size: 28px; font-weight: 200; opacity: .4; flex-shrink: 0; }
+
+
 .sec-hdr {
   font-family: 'Consolas', 'SF Mono', monospace; font-size: 9px; font-weight: 500;
   letter-spacing: 2px; text-transform: uppercase; color: var(--muted);
@@ -375,7 +394,7 @@ const QCOLORS = {
   Q5:  '#8b5cf6', Q6:  '#06b6d4', Q7:  '#ef4444', Q8:  '#f59e0b',
   Q9:  '#14b8a6', Q10: '#6366f1', Q11: '#f43f5e', Q12: '#84cc16'
 };
-let DATA = {}, state = { year: null, q: null, search: '' };
+let DATA = {}, state = { year: null, q: null, month: null, search: '' };
 const collapsed = {};
 const DEFINED_QS = {}; // quarters explicitly khai báo trong manifest
 
@@ -435,15 +454,28 @@ function renderSB() {
       <span class="sb-year-label">${yr}</span>
       <span class="sb-chevron ${open?'open':''}">▾</span>
     </div>
-    <div class="sb-qs" id="sbqs-${yr}" style="max-height:${open?'400px':'0'}">`;
+    <div class="sb-qs" id="sbqs-${yr}" style="max-height:${open?'600px':'0'}">`;
     for (const q of QS) {
-      const n = (DATA[yr][q]||[]).length;
-      if (!n) continue;
-      const on = state.year===yr && state.q===q;
-      h += `<div class="sb-q ${on?'active':''}" onclick="selectQ('${yr}','${q}')">
+      const items = DATA[yr][q]||[];
+      if (!items.length) continue;
+      const onQ = state.year===yr && state.q===q;
+      const months = [...new Set(items.map(t=>t.month).filter(Boolean))].sort();
+      const hasMonths = months.length > 0;
+      h += `<div class="sb-q ${onQ && !state.month?'active':''}" onclick="selectQ('${yr}','${q}')">
         ${q}
-        <span class="sb-q-count">${n}</span>
+        <span class="sb-q-count">${items.length}</span>
       </div>`;
+      // Hiện sub-months nếu đang ở Q này
+      if (onQ && hasMonths) {
+        for (const m of months) {
+          const mc = items.filter(t=>t.month===m).length;
+          const onM = state.month === m;
+          h += `<div class="sb-q sb-month ${onM?'active':''}" onclick="selectMonth('${yr}','${q}','${m}')">
+            └ ${m}
+            <span class="sb-q-count">${mc}</span>
+          </div>`;
+        }
+      }
     }
     h += `</div>`;
   }
@@ -454,6 +486,7 @@ function render() {
   renderSB();
   const el = document.getElementById('main');
   if (!state.year) renderHome(el);
+  else if (state.month) renderMonth(el);
   else renderQ(el);
 }
 
@@ -527,10 +560,10 @@ function renderHome(el) {
 
 function renderQ(el) {
   const items = (DATA[state.year] && DATA[state.year][state.q]) || [];
-  const s = state.search.trim().toLowerCase();
-  const found = s ? items.filter(t => t.name.toLowerCase().includes(s)) : items;
-
   const c = QCOLORS[state.q] || '#3d3bff';
+  const months = [...new Set(items.map(t=>t.month).filter(Boolean))].sort();
+  const hasMonths = months.length > 0;
+
   let h = `<div class="bc">
     <span class="bc-a" onclick="goHome()">Home</span>
     <span class="bc-sep">/</span>
@@ -544,8 +577,57 @@ function renderQ(el) {
       <div class="q-view-info-label">${state.year}</div>
       <div class="q-view-info-val">${items.length} spec document${items.length!==1?'s':''}</div>
     </div>
+  </div>`;
+
+  if (hasMonths) {
+    // Hiện grid tháng để chọn
+    h += `<div class="sec-hdr">Chọn tháng</div>
+    <div class="month-grid">`;
+    for (const m of months) {
+      const n = items.filter(t=>t.month===m).length;
+      h += `<div class="month-card" onclick="selectMonth('${state.year}','${state.q}','${m}')" style="border-color:${c}40">
+        <div class="month-card-accent" style="background:${c}"></div>
+        <div class="month-card-icon">📅</div>
+        <div class="month-card-label" style="color:${c}">${m}</div>
+        <div class="month-card-n" style="color:${c}">${n}</div>
+        <div class="month-card-sub">${state.year} · ${state.q}</div>
+        <div class="month-card-arrow" style="color:${c}">›</div>
+      </div>`;
+    }
+    h += `</div>`;
+  } else {
+    // Không có tháng → hiện thẳng danh sách
+    const s = state.search.trim().toLowerCase();
+    const found = s ? items.filter(t => t.name.toLowerCase().includes(s)) : items;
+    h += `<div class="sec-hdr">Spec Documents</div>`;
+    h += found.length ? taskList(found, false, c) : `<div class="empty-state"><div class="empty-state-icon">📭</div><p>Không có kết quả</p></div>`;
+  }
+  el.innerHTML = h;
+}
+
+function renderMonth(el) {
+  const items = (DATA[state.year] && DATA[state.year][state.q]) || [];
+  const monthItems = items.filter(t => t.month === state.month);
+  const s = state.search.trim().toLowerCase();
+  const found = s ? monthItems.filter(t => t.name.toLowerCase().includes(s)) : monthItems;
+  const c = QCOLORS[state.q] || '#3d3bff';
+
+  let h = `<div class="bc">
+    <span class="bc-a" onclick="goHome()">Home</span>
+    <span class="bc-sep">/</span>
+    <span class="bc-a" onclick="goHome()">${state.year}</span>
+    <span class="bc-sep">/</span>
+    <span class="bc-a" onclick="selectQ('${state.year}','${state.q}')">${state.q}</span>
+    <span class="bc-sep">/</span>
+    <span>${state.month}</span>
   </div>
-`;
+  <div class="q-view-hdr" data-q="${state.month}" style="background:${c}12;border:1px solid ${c}30;color:${c}">
+    <div class="q-view-badge">${state.month}</div>
+    <div>
+      <div class="q-view-info-label">${state.year} · ${state.q}</div>
+      <div class="q-view-info-val">${monthItems.length} spec document${monthItems.length!==1?'s':''}</div>
+    </div>
+  </div>`;
 
   h += `<div class="sec-hdr">Spec Documents</div>`;
   h += found.length ? taskList(found, false, c) : `<div class="empty-state"><div class="empty-state-icon">📭</div><p>Không có kết quả</p></div>`;
@@ -570,9 +652,10 @@ function taskList(ts, showQ=false, qColor='#3d3bff') {
 }
 
 function goHome() {
-  state={year:null,q:null,search:''}; render();
+  state={year:null,q:null,month:null,search:''}; render();
 }
-function selectQ(yr,q) { state={year:yr,q,search:''}; render(); }
+function selectQ(yr,q) { state={year:yr,q,month:null,search:''}; render(); }
+function selectMonth(yr,q,m) { state={year:yr,q,month:m,search:''}; render(); }
 function focusSearch() {
   goHome();
   setTimeout(()=>{ const i=document.querySelector('.search-wrap input'); if(i){ i.focus(); window.scrollTo({top:0,behavior:'smooth'}); } }, 50);

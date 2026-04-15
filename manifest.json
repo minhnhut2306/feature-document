@@ -1,11 +1,11 @@
 {
   "2026": {
-    "Q1": [              ],
+    "Q1": [],
     "Q2": [
-      { "name": "Đưa App Lên CH Play",       "file": "2026/Q2/dua-app-len-chplay-spec.html",       "tags": ["spec","dev"] },
-      { "name": "UX/UI Mission Máy Chiếu",   "file": "2026/Q2/ux-ui-mission-may-chieu-spec.html",  "tags": ["ux","qa"] },
-      { "name": "Tracking Active",           "file": "2026/Q2/tracking-active-spec.html",           "tags": ["spec","dev","qa"] },
-      { "name": "Popup Error",               "file": "2026/Q2/popup-error-spec.html",               "tags": ["ux","qa"] }
+      { "name": "Đưa App Lên CH Play",       "file": "2026/Q2/T4/dua-app-len-chplay-spec.html",       "tags": ["spec","dev"],    "month": "T4" },
+      { "name": "UX/UI Mission Máy Chiếu",   "file": "2026/Q2/T4/ux-ui-mission-may-chieu-spec.html",  "tags": ["ux","qa"],       "month": "T4" },
+      { "name": "Tracking Active",           "file": "2026/Q2/T4/tracking-active-spec.html",           "tags": ["spec","dev","qa"],"month": "T4" },
+      { "name": "Popup Error",               "file": "2026/Q2/T4/popup-error-spec.html",               "tags": ["ux","qa"],       "month": "T4" }
     ],
     "Q3": [
       { "name": "Tên Spec Của Bạn", "file": "2026/Q3/index.html", "tags": ["spec"] }
